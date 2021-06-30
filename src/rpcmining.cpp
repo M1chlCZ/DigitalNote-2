@@ -823,7 +823,7 @@ json_spirit::Value getblocktemplate(const json_spirit::Array& params, bool fHelp
 	result.push_back(json_spirit::Pair("transactions", transactions));
 
 	// Check for payment upgrade fork
-	if (pindexBest->GetBlockTime() > 0 and pindexBest->GetBlockTime() > mapEpochToUpdateName["PaymentUpdate_1"]) // Monday, May 20, 2019 12:00:00 AM
+	if (pindexBest->GetBlockTime() > 0 and pindexBest->GetBlockTime() > mapVersionInformation["v2.0.0.0"].start) // Monday, May 20, 2019 12:00:00 AM
 	{
 		std::string devpayee2;
 		
@@ -831,13 +831,13 @@ json_spirit::Value getblocktemplate(const json_spirit::Array& params, bool fHelp
 		int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, networkPayment);
 		int64_t devopsPayment = GetDevOpsPayment(pindexPrev->nHeight+1, networkPayment);
 
-		if (pindexBest->GetBlockTime() < mapEpochToUpdateName["PaymentUpdate_4"])
+		if (pindexBest->GetBlockTime() < mapVersionInformation["v2.0.0.0"].start)
 		{
-			devpayee2 = mapNameToDeveloperAdress["DevelopersAdress_v1.0.1.5"];
+			devpayee2 = mapVersionInformation["v1.0.1.5"].developer_address;
 		}
 		else
 		{
-			devpayee2 = mapNameToDeveloperAdress["DevelopersAdress_v2.0.0.0"];
+			devpayee2 = mapVersionInformation["v2.0.0.0"].developer_address;
 		}
 
 		// Include DevOps payments

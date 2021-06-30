@@ -1134,7 +1134,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 	int64_t pindexBestBlockTime = pindexBest->GetBlockTime();
 
 	// Fork toggle for payment upgrade
-	bool bDevOpsPayment = (pindexBestBlockTime > mapEpochToUpdateName["PaymentUpdate_1"]);
+	bool bDevOpsPayment = (pindexBestBlockTime > mapVersionInformation["v1.0.0.0"].start);
 
 	// Run checks if at fork height
 	if(bDevOpsPayment)
@@ -1203,13 +1203,13 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 		}
 		
 		// Devops Address Set and Updates
-		if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_4"])
+		if(pindexBestBlockTime < mapVersionInformation["v2.0.0.0"].start)
 		{
-			strVfyDevopsAddress = mapNameToDeveloperAdress["DevelopersAdress_v1.0.1.5"];
+			strVfyDevopsAddress = mapVersionInformation["v1.0.1.5"].developer_address;
 		}
 		else
 		{
-			strVfyDevopsAddress = mapNameToDeveloperAdress["DevelopersAdress_v2.0.0.0"];
+			strVfyDevopsAddress = mapVersionInformation["v2.0.0.0"].developer_address;
 		}
 		
 		// Check PoW or PoS payments for current block
@@ -1277,15 +1277,15 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 						LogPrintf("CheckBlock() : PoS Recipient devops address validity could not be verified\n");
 						
 						/*
-						if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_2"] ||
-							pindexBestBlockTime >= mapEpochToUpdateName["PaymentUpdate_3"])
+						if(pindexBestBlockTime < mapVersionInformation["v1.0.1.5"].start ||
+							pindexBestBlockTime >= mapVersionInformation["v1.0.1.5"].end)
 						{
 							fBlockHasPayments = false;
 						}
 						*/
 						
-						if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_4"] ||
-							pindexBestBlockTime >= mapEpochToUpdateName["PaymentUpdate_5"])
+						if(pindexBestBlockTime < mapVersionInformation["v2.0.0.0"].start ||
+							pindexBestBlockTime >= mapVersionInformation["v2.0.0.0"].end)
 						{
 							fBlockHasPayments = false;
 						}
@@ -1297,7 +1297,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 					}
 					else
 					{
-						if (pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_2"])
+						if (pindexBestBlockTime < mapVersionInformation["v1.0.1.5"].start)
 						{
 							LogPrintf("CheckBlock() : PoS Recipient devops amount validity could not be verified\n");
 
@@ -1369,15 +1369,15 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 						LogPrintf("CheckBlock() : PoW Recipient devops address validity could not be verified\n");
 						
 						/*
-						if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_2"] ||	// Check legacy blocks for valid payment, only skip for Update_2
-							pindexBestBlockTime >= mapEpochToUpdateName["PaymentUpdate_3"])	// Skip check during transition to new DevOps
+						if(pindexBestBlockTime < mapVersionInformation["v1.0.1.5"].start ||	// Check legacy blocks for valid payment, only skip for Update_2
+							pindexBestBlockTime >= mapVersionInformation["v1.0.1.5"].end)	// Skip check during transition to new DevOps
 						{
 							fBlockHasPayments = false;
 						}
 						*/
 						
-						if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_4"] ||
-							pindexBestBlockTime >= mapEpochToUpdateName["PaymentUpdate_5"])
+						if(pindexBestBlockTime < mapVersionInformation["v2.0.0.0"].start ||
+							pindexBestBlockTime >= mapVersionInformation["v2.0.0.0"].end)
 						{
 							fBlockHasPayments = false;
 						}
@@ -1389,7 +1389,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 					}
 					else
 					{
-						if (pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_2"])
+						if (pindexBestBlockTime < mapVersionInformation["v1.0.1.5"].start)
 						{
 							LogPrintf("CheckBlock() : PoW Recipient devops amount validity could not be verified\n");
 							fBlockHasPayments = false;

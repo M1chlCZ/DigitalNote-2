@@ -18,7 +18,12 @@ static const int64_t VELOCITY_TOGGLE = 175; // Implementation of the Velocity sy
 static const int64_t VELOCITY_TDIFF = 0; // Use Velocity's retargetting method.
 /** Protocol 3.0 toggle */
 
-extern std::map<std::string, int64_t> mapEpochToUpdateName;
-extern std::map<std::string, std::string> mapNameToDeveloperAdress;
+struct VersionInformation {
+	int64_t start;
+	int64_t end;
+	std::string developer_address;
+};
+
+extern std::map<std::string, VersionInformation> mapVersionInformation;
 
 #endif // BITCOIN_FORK_H

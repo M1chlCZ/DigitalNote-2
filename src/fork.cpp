@@ -3,43 +3,72 @@
 /**
 	https://www.epochconverter.com/
 */
-std::map<std::string, int64_t> mapEpochToUpdateName = {
-	{ "PaymentUpdate_1", 1558310400 }, // Monday, 20 May 2019 00:00:00 GMT
-	{ "PaymentUpdate_2", 1562094000 }, // Tuesday, 2 July 2019 19:00:00 GMT
-	{ "PaymentUpdate_3", 1562281200 }, // Thursday, 4 July 2019 23:00:00 GMT
-	
-	/*
-		Update 2.0.0:
-		- Patch security bug seesaw
-		- Patch Developer wallet adress
-	*/
-	{ "PaymentUpdate_4", 1631232000 }, // Friday, 10 September 2021 00:00:00 GMT
-	{ "PaymentUpdate_5", 1631404800 }, // Friday, 12 September 2021 00:00:00 GMT
-};
-
-std::map<std::string, std::string> mapNameToDeveloperAdress = {
+std::map<std::string, VersionInformation> mapVersionInformation = {
 	/*
 		Early development adresses
 	*/
-	{"DevelopersAdress_unknown_1", "Dtz6UgAxwavsnxnb7jeSRj5cgERLvV8KBy"},
-	{"DevelopersAdress_unknown_2", "dNXKdXpviJRV5asL2sPbsxizwfBoFgsRzq"},
-	{"DevelopersAdress_unknown_3", "dPxigPi3gY3Za2crBUV2Sn2BDCrpX9eweo"},
+	{
+		"unknown_1",
+		{
+			0,
+			0, 
+			"Dtz6UgAxwavsnxnb7jeSRj5cgERLvV8KBy"
+		}
+	},
+	{
+		"unknown_2",
+		{
+			0,
+			0, 
+			"dNXKdXpviJRV5asL2sPbsxizwfBoFgsRzq"
+		}
+	},
+	{
+		"unknown_3",
+		{
+			0,
+			0, 
+			"dPxigPi3gY3Za2crBUV2Sn2BDCrpX9eweo"
+		}
+	},
 	
 	/*
-		Update 1.0.0.0:
-		- First developer adress
+		Update 1.0.0:
+		- Add first developer address
 	*/
-	{"DevelopersAdress_v1.0.0.0", "dSCXLHTZJJqTej8ZRszZxbLrS6dDGVJhw7"},
+	{
+		"v1.0.0.0",
+		{
+			1558310400,								// Start:			Monday, 20 May 2019 00:00:00 GMT
+			1558310400,								// End:				Monday, 20 May 2019 00:00:00 GMT
+			"dSCXLHTZJJqTej8ZRszZxbLrS6dDGVJhw7"	// Developer Addr
+		}
+	},
 	
 	/*
-		Update v1.0.1.5:
-		- Replaced developer adress for first stable release.
+		Update 1.0.1.5:
+		- Change to new developer address
 	*/
-	{"DevelopersAdress_v1.0.1.5", "dHy3LZvqX5B2rAAoLiA7Y7rpvkLXKTkD18"},
+	{
+		"v1.0.1.5",
+		{
+			1562094000,								// Start:			Tuesday, 2 July 2019 19:00:00 GMT
+			1562281200,								// End:				Thursday, 4 July 2019 23:00:00 GMT
+			"dHy3LZvqX5B2rAAoLiA7Y7rpvkLXKTkD18"	// Developer Addr
+		}
+	},
 	
 	/*
 		Update 2.0.0.0:
-		- Because of security reasons we replaced the wallet adress to a brand new one.
+		- Patch security bug seesaw
+		- Because of security reasons we replaced the developer adress to a brand new one.
 	*/
-	{"DevelopersAdress_v2.0.0.0", "dafC1LknpDu7eALTf5DPcnPq2dwq7f9YPE"},
+	{
+		"v2.0.0.0",
+		{
+			1631232000,								// Start:			Friday, 10 September 2021 00:00:00 GMT
+			1631404800,								// End:				Friday, 12 September 2021 00:00:00 GMT
+			"dafC1LknpDu7eALTf5DPcnPq2dwq7f9YPE"	// Developer Addr
+		}
+	}
 };

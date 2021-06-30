@@ -2701,13 +2701,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     CBitcoinAddress devopaddress;
     if (Params().NetworkID() == CChainParams_Network::MAIN)
 	{
-        if(GetTime() < mapEpochToUpdateName["PaymentUpdate_4"])
+        if(GetTime() < mapVersionInformation["v2.0.0.0"].start)
 		{
-			devopaddress = CBitcoinAddress(mapNameToDeveloperAdress["DevelopersAdress_v1.0.1.5"]);
+			devopaddress = CBitcoinAddress(mapVersionInformation["v1.0.1.5"].developer_address);
 		}
         else
 		{
-			devopaddress = CBitcoinAddress(mapNameToDeveloperAdress["DevelopersAdress_v2.0.0.0"]);
+			devopaddress = CBitcoinAddress(mapVersionInformation["v2.0.0.0"].developer_address);
 		}
     }
 	else if (Params().NetworkID() == CChainParams_Network::TESTNET)
