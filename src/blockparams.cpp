@@ -823,6 +823,11 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
         }
     }
 	
+	if(pindexBest->GetBlockTime() > mapVersionInformation["v2.0.0.0"].start) // Monday, May 20, 2019 12:00:00 AM
+    {
+		ret = 150;
+	}
+	
     // Return our seesaw arc value (reward in current position of arc)
     return ret;
 }
