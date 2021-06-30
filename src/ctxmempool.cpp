@@ -9,7 +9,7 @@
 #include "ctxin.h"
 #include "thread.h"
 
-#include "txmempool.h"
+#include "ctxmempool.h"
 
 CTxMemPool::CTxMemPool()
 {

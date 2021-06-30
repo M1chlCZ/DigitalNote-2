@@ -30,7 +30,7 @@
 #include "enums/opcodetype.h"
 #include "main_const.h"
 #include "main_extern.h"
-#include "txmempool.h"
+#include "ctxmempool.h"
 #include "webwalletconnector.h"
 #include "smsg.h"
 #include "ckeymetadata.h"
@@ -2701,13 +2701,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     CBitcoinAddress devopaddress;
     if (Params().NetworkID() == CChainParams_Network::MAIN)
 	{
-        if(GetTime() < mapEpochUpdateName["PaymentUpdate_2"])
+        if(GetTime() < mapEpochToUpdateName["PaymentUpdate_4"])
 		{
-			devopaddress = CBitcoinAddress("dSCXLHTZJJqTej8ZRszZxbLrS6dDGVJhw7");
-		} // TODO: nothing, already set to a valid DigitalNote address
+			devopaddress = CBitcoinAddress(mapNameToDeveloperAdress["DevelopersAdress_v1.0.1.5"]);
+		}
         else
 		{
-			devopaddress = CBitcoinAddress("dHy3LZvqX5B2rAAoLiA7Y7rpvkLXKTkD18");
+			devopaddress = CBitcoinAddress(mapNameToDeveloperAdress["DevelopersAdress_v2.0.0.0"]);
 		}
     }
 	else if (Params().NetworkID() == CChainParams_Network::TESTNET)

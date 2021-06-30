@@ -26,7 +26,7 @@
 #include "cblock.h"
 #include "script.h"
 #include "net.h"
-#include "txmempool.h"
+#include "ctxmempool.h"
 #include "ctxout.h"
 #include "ctransaction.h"
 #include "main_extern.h"
@@ -631,259 +631,261 @@ json_spirit::Value getwork(const json_spirit::Array& params, bool fHelp)
 
 json_spirit::Value getblocktemplate(const json_spirit::Array& params, bool fHelp)
 {
-    if (fHelp || params.size() > 1)
+	if (fHelp || params.size() > 1)
 	{
-        throw std::runtime_error(
-            "getblocktemplate [params]\n"
-            "Returns data needed to construct a block to work on:\n"
-            "  \"version\" : block version\n"
-            "  \"previousblockhash\" : hash of current highest block\n"
-            "  \"transactions\" : contents of non-coinbase transactions that should be included in the next block\n"
-            "  \"coinbaseaux\" : data that should be included in coinbase\n"
-            "  \"coinbasevalue\" : maximum allowable input to coinbase transaction, including the generation award and transaction fees\n"
-            "  \"target\" : hash target\n"
-            "  \"mintime\" : minimum timestamp appropriate for next block\n"
-            "  \"curtime\" : current timestamp\n"
-            "  \"mutable\" : list of ways the block template may be changed\n"
-            "  \"noncerange\" : range of valid nonces\n"
-            "  \"sigoplimit\" : limit of sigops in blocks\n"
-            "  \"sizelimit\" : limit of block size\n"
-            "  \"bits\" : compressed target of next block\n"
-            "  \"height\" : height of the next block\n"
-            "  \"payee\" : \"xxx\",                (string) required payee for the next block\n"
-            "  \"payee_amount\" : n,               (numeric) required amount to pay\n"
-            "  \"votes\" : [\n                     (array) show vote candidates\n"
-            "        { ... }                       (json object) vote candidate\n"
-            "        ,...\n"
-            "  ],\n"
-            "  \"masternode_payments\" : true|false,         (boolean) true, if masternode payments are enabled"
-            "  \"enforce_masternode_payments\" : true|false  (boolean) true, if masternode payments are enforced"
-            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification."
+		throw std::runtime_error(
+			"getblocktemplate [params]\n"
+			"Returns data needed to construct a block to work on:\n"
+			"  \"version\" : block version\n"
+			"  \"previousblockhash\" : hash of current highest block\n"
+			"  \"transactions\" : contents of non-coinbase transactions that should be included in the next block\n"
+			"  \"coinbaseaux\" : data that should be included in coinbase\n"
+			"  \"coinbasevalue\" : maximum allowable input to coinbase transaction, including the generation award and transaction fees\n"
+			"  \"target\" : hash target\n"
+			"  \"mintime\" : minimum timestamp appropriate for next block\n"
+			"  \"curtime\" : current timestamp\n"
+			"  \"mutable\" : list of ways the block template may be changed\n"
+			"  \"noncerange\" : range of valid nonces\n"
+			"  \"sigoplimit\" : limit of sigops in blocks\n"
+			"  \"sizelimit\" : limit of block size\n"
+			"  \"bits\" : compressed target of next block\n"
+			"  \"height\" : height of the next block\n"
+			"  \"payee\" : \"xxx\",                (string) required payee for the next block\n"
+			"  \"payee_amount\" : n,               (numeric) required amount to pay\n"
+			"  \"votes\" : [\n                     (array) show vote candidates\n"
+			"        { ... }                       (json object) vote candidate\n"
+			"        ,...\n"
+			"  ],\n"
+			"  \"masternode_payments\" : true|false,         (boolean) true, if masternode payments are enabled"
+			"  \"enforce_masternode_payments\" : true|false  (boolean) true, if masternode payments are enforced"
+			"See https://en.bitcoin.it/wiki/BIP_0022 for full specification."
 		);
 	}
-	
-    std::string strMode = "template";
-    if (params.size() > 0)
-    {
-        const json_spirit::Object& oparam = params[0].get_obj();
-        const json_spirit::Value& modeval = find_value(oparam, "mode");
-        
+
+	std::string strMode = "template";
+	if (params.size() > 0)
+	{
+		const json_spirit::Object& oparam = params[0].get_obj();
+		const json_spirit::Value& modeval = find_value(oparam, "mode");
+		
 		if (modeval.type() == json_spirit::str_type)
 		{
-            strMode = modeval.get_str();
+			strMode = modeval.get_str();
 		}
-        else if (modeval.type() == json_spirit::null_type)
-        {
-            /* Do nothing */
-        }
-        else
+		else if (modeval.type() == json_spirit::null_type)
 		{
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
+			/* Do nothing */
 		}
-    }
+		else
+		{
+			throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
+		}
+	}
 
-    if (strMode != "template")
+	if (strMode != "template")
 	{
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
+		throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 	}
-	
-    if (vNodes.empty())
+
+	if (vNodes.empty())
 	{
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DigitalNote is not connected!");
+		throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "DigitalNote is not connected!");
 	}
-	
-    //if (IsInitialBlockDownload())
+
+	//if (IsInitialBlockDownload())
 	//{
-    //    throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DigitalNote is downloading blocks...");
+	//    throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "DigitalNote is downloading blocks...");
 	//}
-	
-    if (pindexBest->nHeight >= Params().EndPoWBlock())
+
+	if (pindexBest->nHeight >= Params().EndPoWBlock())
 	{
-        throw JSONRPCError(RPC_MISC_ERROR, "No more PoW blocks");
+		throw JSONRPCError(RPC_MISC_ERROR, "No more PoW blocks");
 	}
-	
-    // Update block
-    static unsigned int nTransactionsUpdatedLast;
-    static CBlockIndex* pindexPrev;
-    static int64_t nStart;
-    static CBlock* pblock;
-    
+
+	// Update block
+	static unsigned int nTransactionsUpdatedLast;
+	static CBlockIndex* pindexPrev;
+	static int64_t nStart;
+	static CBlock* pblock;
+
 	if (
 		pindexPrev != pindexBest ||
-        (
+		(
 			mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast &&
 			GetTime() - nStart > 5
 		)
 	)
-    {
-        // Clear pindexPrev so future calls make a new block, despite any failures from here on
-        pindexPrev = NULL;
+	{
+		// Clear pindexPrev so future calls make a new block, despite any failures from here on
+		pindexPrev = NULL;
 
-        // Store the pindexBest used before CreateNewBlock, to avoid races
-        nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
-        CBlockIndex* pindexPrevNew = pindexBest;
-        nStart = GetTime();
+		// Store the pindexBest used before CreateNewBlock, to avoid races
+		nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
+		CBlockIndex* pindexPrevNew = pindexBest;
+		nStart = GetTime();
 
-        // Create new block
-        if(pblock)
-        {
-            delete pblock;
-            
+		// Create new block
+		if(pblock)
+		{
+			delete pblock;
+			
 			pblock = NULL;
-        }
-        
+		}
+		
 		pblock = CreateNewBlock(*pMiningKey);
-        
+		
 		if (!pblock)
 		{
-            throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+			throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
 		}
 		
-        // Need to update only after we know CreateNewBlock succeeded
-        pindexPrev = pindexPrevNew;
-    }
+		// Need to update only after we know CreateNewBlock succeeded
+		pindexPrev = pindexPrevNew;
+	}
 
-    // Update nTime
-    pblock->UpdateTime(pindexPrev);
-    pblock->nNonce = 0;
+	// Update nTime
+	pblock->UpdateTime(pindexPrev);
+	pblock->nNonce = 0;
 
-    json_spirit::Array transactions;
-    std::map<uint256, int64_t> setTxIndex;
-    int i = 0;
-    CTxDB txdb("r");
-    
+	json_spirit::Array transactions;
+	std::map<uint256, int64_t> setTxIndex;
+	int i = 0;
+	CTxDB txdb("r");
+
 	for(CTransaction& tx : pblock->vtx)
-    {
-        uint256 txHash = tx.GetHash();
-        setTxIndex[txHash] = i++;
+	{
+		uint256 txHash = tx.GetHash();
+		setTxIndex[txHash] = i++;
 
-        if (tx.IsCoinBase() || tx.IsCoinStake())
+		if (tx.IsCoinBase() || tx.IsCoinStake())
 		{
-            continue;
+			continue;
 		}
 		
-        json_spirit::Object entry;
-        CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-        
+		json_spirit::Object entry;
+		CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+		
 		ssTx << tx;
 		
-        entry.push_back(json_spirit::Pair("data", HexStr(ssTx.begin(), ssTx.end())));
-        entry.push_back(json_spirit::Pair("hash", txHash.GetHex()));
+		entry.push_back(json_spirit::Pair("data", HexStr(ssTx.begin(), ssTx.end())));
+		entry.push_back(json_spirit::Pair("hash", txHash.GetHex()));
 
-        MapPrevTx mapInputs;
-        std::map<uint256, CTxIndex> mapUnused;
-        bool fInvalid = false;
+		MapPrevTx mapInputs;
+		std::map<uint256, CTxIndex> mapUnused;
+		bool fInvalid = false;
 		
-        if (tx.FetchInputs(txdb, mapUnused, false, false, mapInputs, fInvalid))
-        {
-            entry.push_back(json_spirit::Pair("fee", (int64_t)(tx.GetValueIn(mapInputs) - tx.GetValueOut())));
+		if (tx.FetchInputs(txdb, mapUnused, false, false, mapInputs, fInvalid))
+		{
+			entry.push_back(json_spirit::Pair("fee", (int64_t)(tx.GetValueIn(mapInputs) - tx.GetValueOut())));
 
-            json_spirit::Array deps;
-            for(MapPrevTx::value_type& inp : mapInputs)
-            {
-                if (setTxIndex.count(inp.first))
+			json_spirit::Array deps;
+			for(MapPrevTx::value_type& inp : mapInputs)
+			{
+				if (setTxIndex.count(inp.first))
 				{
-                    deps.push_back(setTxIndex[inp.first]);
+					deps.push_back(setTxIndex[inp.first]);
 				}
-            }
+			}
 			
-            entry.push_back(json_spirit::Pair("depends", deps));
+			entry.push_back(json_spirit::Pair("depends", deps));
 
-            int64_t nSigOps = GetLegacySigOpCount(tx);
-            nSigOps += GetP2SHSigOpCount(tx, mapInputs);
-            entry.push_back(json_spirit::Pair("sigops", nSigOps));
-        }
+			int64_t nSigOps = GetLegacySigOpCount(tx);
+			nSigOps += GetP2SHSigOpCount(tx, mapInputs);
+			entry.push_back(json_spirit::Pair("sigops", nSigOps));
+		}
 
-        transactions.push_back(entry);
-    }
+		transactions.push_back(entry);
+	}
 
-    json_spirit::Object aux;
-    aux.push_back(json_spirit::Pair("flags", HexStr(COINBASE_FLAGS.begin(), COINBASE_FLAGS.end())));
+	json_spirit::Object aux;
+	aux.push_back(json_spirit::Pair("flags", HexStr(COINBASE_FLAGS.begin(), COINBASE_FLAGS.end())));
 
-    uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
+	uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
 
-    static json_spirit::Array aMutable;
-    if (aMutable.empty())
-    {
-        aMutable.push_back("time");
-        aMutable.push_back("transactions");
-        aMutable.push_back("prevblock");
-        aMutable.push_back("version/force");
-    }
+	static json_spirit::Array aMutable;
+	if (aMutable.empty())
+	{
+		aMutable.push_back("time");
+		aMutable.push_back("transactions");
+		aMutable.push_back("prevblock");
+		aMutable.push_back("version/force");
+	}
 
-    json_spirit::Array aVotes;
-    json_spirit::Object result;
+	json_spirit::Array aVotes;
+	json_spirit::Object result;
 
-    // Define coinbase payment
-    int64_t networkPayment = pblock->vtx[0].vout[0].nValue;
+	// Define coinbase payment
+	int64_t networkPayment = pblock->vtx[0].vout[0].nValue;
 
-    // Standard values
-    result.push_back(json_spirit::Pair("version", pblock->nVersion));
-    result.push_back(json_spirit::Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
-    result.push_back(json_spirit::Pair("transactions", transactions));
-    
+	// Standard values
+	result.push_back(json_spirit::Pair("version", pblock->nVersion));
+	result.push_back(json_spirit::Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
+	result.push_back(json_spirit::Pair("transactions", transactions));
+
 	// Check for payment upgrade fork
-    if (pindexBest->GetBlockTime() > 0)
-    {
-        if (pindexBest->GetBlockTime() > mapEpochUpdateName["PaymentUpdate_2"]) // Monday, May 20, 2019 12:00:00 AM
-        {
-            // Set Masternode / DevOps payments
-            int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, networkPayment);
-            int64_t devopsPayment = GetDevOpsPayment(pindexPrev->nHeight+1, networkPayment);
-            std::string devpayee2 = "dHy3LZvqX5B2rAAoLiA7Y7rpvkLXKTkD18";
+	if (pindexBest->GetBlockTime() > 0 and pindexBest->GetBlockTime() > mapEpochToUpdateName["PaymentUpdate_1"]) // Monday, May 20, 2019 12:00:00 AM
+	{
+		std::string devpayee2;
+		
+		// Set Masternode / DevOps payments
+		int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, networkPayment);
+		int64_t devopsPayment = GetDevOpsPayment(pindexPrev->nHeight+1, networkPayment);
 
-            if (pindexBest->GetBlockTime() < mapEpochUpdateName["PaymentUpdate_2"])
-			{
-                devpayee2 = Params().DevOpsAddress();
-            }
+		if (pindexBest->GetBlockTime() < mapEpochToUpdateName["PaymentUpdate_4"])
+		{
+			devpayee2 = mapNameToDeveloperAdress["DevelopersAdress_v1.0.1.5"];
+		}
+		else
+		{
+			devpayee2 = mapNameToDeveloperAdress["DevelopersAdress_v2.0.0.0"];
+		}
 
-            // Include DevOps payments
-            CAmount devopsSplit = devopsPayment;
-            result.push_back(json_spirit::Pair("devops_payee", devpayee2));
-            result.push_back(json_spirit::Pair("devops_amount", (int64_t)devopsSplit));
-            result.push_back(json_spirit::Pair("devops_payments", true));
-            result.push_back(json_spirit::Pair("enforce_devops_payments", true));
+		// Include DevOps payments
+		CAmount devopsSplit = devopsPayment;
+		result.push_back(json_spirit::Pair("devops_payee", devpayee2));
+		result.push_back(json_spirit::Pair("devops_amount", (int64_t)devopsSplit));
+		result.push_back(json_spirit::Pair("devops_payments", true));
+		result.push_back(json_spirit::Pair("enforce_devops_payments", true));
 
-            // Include Masternode payments
-            CAmount masternodeSplit = masternodePayment;
-            CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
-            
-			if (winningNode)
-			{
-                CScript payee = GetScriptForDestination(winningNode->pubkey.GetID());
-                CTxDestination address1;
-                
-				ExtractDestination(payee, address1);
-                CBitcoinAddress address2(address1);
-                
-				result.push_back(json_spirit::Pair("masternode_payee", address2.ToString().c_str()));
-            }
-			else
-			{
-                result.push_back(json_spirit::Pair("masternode_payee", devpayee2.c_str()));
-            }
-            
-			result.push_back(json_spirit::Pair("payee_amount", (int64_t)masternodeSplit));
-            result.push_back(json_spirit::Pair("masternode_payments", true));
-            result.push_back(json_spirit::Pair("enforce_masternode_payments", true));
-        }
-    }
-	
-    // Standard values cont...
-    result.push_back(json_spirit::Pair("coinbaseaux", aux));
-    result.push_back(json_spirit::Pair("coinbasevalue", networkPayment));
-    result.push_back(json_spirit::Pair("target", hashTarget.GetHex()));
-    result.push_back(json_spirit::Pair("mintime", (int64_t)pindexPrev->GetPastTimeLimit()+1));
-    result.push_back(json_spirit::Pair("mutable", aMutable));
-    result.push_back(json_spirit::Pair("noncerange", "00000000ffffffff"));
-    result.push_back(json_spirit::Pair("sigoplimit", (int64_t)MAX_BLOCK_SIGOPS));
-    result.push_back(json_spirit::Pair("sizelimit", (int64_t)MAX_BLOCK_SIZE));
-    result.push_back(json_spirit::Pair("curtime", (int64_t)pblock->nTime));
-    result.push_back(json_spirit::Pair("bits", strprintf("%08x", pblock->nBits)));
-    result.push_back(json_spirit::Pair("height", (int64_t)(pindexPrev->nHeight+1)));
-    result.push_back(json_spirit::Pair("votes", aVotes));
+		// Include Masternode payments
+		CAmount masternodeSplit = masternodePayment;
+		CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
+		
+		if (winningNode)
+		{
+			CScript payee = GetScriptForDestination(winningNode->pubkey.GetID());
+			CTxDestination address1;
+			
+			ExtractDestination(payee, address1);
+			CBitcoinAddress address2(address1);
+			
+			result.push_back(json_spirit::Pair("masternode_payee", address2.ToString().c_str()));
+		}
+		else
+		{
+			result.push_back(json_spirit::Pair("masternode_payee", devpayee2.c_str()));
+		}
+		
+		result.push_back(json_spirit::Pair("payee_amount", (int64_t)masternodeSplit));
+		result.push_back(json_spirit::Pair("masternode_payments", true));
+		result.push_back(json_spirit::Pair("enforce_masternode_payments", true));
+	}
 
-    return result;
+	// Standard values cont...
+	result.push_back(json_spirit::Pair("coinbaseaux", aux));
+	result.push_back(json_spirit::Pair("coinbasevalue", networkPayment));
+	result.push_back(json_spirit::Pair("target", hashTarget.GetHex()));
+	result.push_back(json_spirit::Pair("mintime", (int64_t)pindexPrev->GetPastTimeLimit()+1));
+	result.push_back(json_spirit::Pair("mutable", aMutable));
+	result.push_back(json_spirit::Pair("noncerange", "00000000ffffffff"));
+	result.push_back(json_spirit::Pair("sigoplimit", (int64_t)MAX_BLOCK_SIGOPS));
+	result.push_back(json_spirit::Pair("sizelimit", (int64_t)MAX_BLOCK_SIZE));
+	result.push_back(json_spirit::Pair("curtime", (int64_t)pblock->nTime));
+	result.push_back(json_spirit::Pair("bits", strprintf("%08x", pblock->nBits)));
+	result.push_back(json_spirit::Pair("height", (int64_t)(pindexPrev->nHeight+1)));
+	result.push_back(json_spirit::Pair("votes", aVotes));
+
+	return result;
 }
 
 json_spirit::Value submitblock(const json_spirit::Array& params, bool fHelp)

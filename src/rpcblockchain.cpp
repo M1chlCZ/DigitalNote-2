@@ -12,7 +12,7 @@
 #include "chainparams.h"
 #include "main.h"
 #include "main_extern.h"
-#include "txmempool.h"
+#include "ctxmempool.h"
 #include "ctxout.h"
 #include "ctxin.h"
 #include "ctransaction.h"

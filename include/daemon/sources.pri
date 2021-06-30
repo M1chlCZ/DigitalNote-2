@@ -70,7 +70,7 @@ SOURCES += src/blockparams.cpp
 SOURCES += src/chainparams.cpp
 SOURCES += src/version.cpp
 SOURCES += src/velocity.cpp
-SOURCES += src/txmempool.cpp
+SOURCES += src/ctxmempool.cpp
 SOURCES += src/util.cpp
 SOURCES += src/hash.cpp
 SOURCES += src/netbase.cpp
@@ -117,6 +117,7 @@ SOURCES += src/mruset.cpp
 SOURCES += src/cautofile.cpp
 SOURCES += src/csizecomputer.cpp
 SOURCES += src/cdatastream.cpp
+SOURCES += src/fork.cpp
 
 SOURCES += src/cbignum_ctx.cpp
 SOURCES += src/cbignum.cpp

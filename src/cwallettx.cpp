@@ -11,7 +11,7 @@
 #include "script.h"
 #include "net.h"
 #include "serialize.h"
-#include "txmempool.h"
+#include "ctxmempool.h"
 #include "main_extern.h"
 #include "ctxout.h"
 #include "ctxin.h"

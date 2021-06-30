@@ -23,6 +23,7 @@
 #include "cblockindex.h"
 #include "main.h"
 #include "main_extern.h"
+#include "fork.h"
 
 #include "blockparams.h"
 
@@ -107,7 +108,7 @@ void VRXswngdebug()
     LogPrintf("Time since last %s block: %u: \n",difType.c_str(),difTime);
 	
     // Handle updated versions as well as legacy
-    if(GetTime() > mapEpochUpdateName["PaymentUpdate_2"])
+    if(GetTime() > mapEpochToUpdateName["PaymentUpdate_2"])
 	{
         debugHourRounds = hourRounds;
         debugTerminalAverage = TerminalAverage;
@@ -442,7 +443,7 @@ void VRX_ThreadCurve(const CBlockIndex* pindexLast, bool fProofOfStake)
 		}
 		
         // Version 1.2 Extended Curve Run Upgrade
-        if(pindexLast->GetBlockTime() > mapEpochUpdateName["PaymentUpdate_2"])
+        if(pindexLast->GetBlockTime() > mapEpochToUpdateName["PaymentUpdate_2"])
 		{// ON Tuesday, Jul 02, 2019 12:00:00 PM PDT
             // Set unbiased comparison
             difTime = blkTime - cntTime;
@@ -507,18 +508,18 @@ void VRX_Dry_Run(const CBlockIndex* pindexLast)
     // Reset difficulty for payments update
     if(pindexLast->GetBlockTime() > 0)
     {
-        if(pindexLast->GetBlockTime() > mapEpochUpdateName["PaymentUpdate_2"]) // ON Monday, May 20, 2019 12:00:00 AM
+        if(pindexLast->GetBlockTime() > mapEpochToUpdateName["PaymentUpdate_2"]) // ON Monday, May 20, 2019 12:00:00 AM
         {
-            if(pindexLast->GetBlockTime() < mapEpochUpdateName["PaymentUpdate_2"]+480) {
+            if(pindexLast->GetBlockTime() < mapEpochToUpdateName["PaymentUpdate_2"]+480) {
                 fDryRun = true;
                 
 				return; // diff reset
             }
         }
 		
-        if(pindexLast->GetBlockTime() > mapEpochUpdateName["PaymentUpdate_2"]) // ON Tuesday, Jul 02, 2019 12:00:00 PM PDT
+        if(pindexLast->GetBlockTime() > mapEpochToUpdateName["PaymentUpdate_2"]) // ON Tuesday, Jul 02, 2019 12:00:00 PM PDT
         {
-            if(pindexLast->GetBlockTime() < mapEpochUpdateName["PaymentUpdate_2"]+480) {
+            if(pindexLast->GetBlockTime() < mapEpochToUpdateName["PaymentUpdate_2"]+480) {
                 fDryRun = true;
                 
 				return; // diff reset
@@ -754,7 +755,7 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 		/*
 			Fix wrong seesawInterval generation.
 		*/
-		if(GetTime() < mapEpochUpdateName["PaymentUpdate_4"])
+		if(GetTime() < mapEpochToUpdateName["PaymentUpdate_4"])
 		{
 			seesawInterval =- seesawRollover;
 		}
@@ -814,7 +815,7 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 	// v1.1 payment subsidy patch
     if(pindexBest->GetBlockTime() > 0)
     {
-        if(pindexBest->GetBlockTime() > mapEpochUpdateName["PaymentUpdate_2"]) // Monday, May 20, 2019 12:00:00 AM
+        if(pindexBest->GetBlockTime() > mapEpochToUpdateName["PaymentUpdate_2"]) // Monday, May 20, 2019 12:00:00 AM
         {
             // set returned value to calculated value
             ret = retDouble;

@@ -25,7 +25,7 @@
 #include "masternodeman.h"
 #include "masternode_extern.h"
 #include "serialize.h"
-#include "txmempool.h"
+#include "ctxmempool.h"
 #include "ckey.h"
 #include "ctxout.h"
 #include "main_extern.h"
@@ -1134,7 +1134,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 	int64_t pindexBestBlockTime = pindexBest->GetBlockTime();
 
 	// Fork toggle for payment upgrade
-	bool bDevOpsPayment = (pindexBestBlockTime > mapEpochUpdateName["PaymentUpdate_1"]);
+	bool bDevOpsPayment = (pindexBestBlockTime > mapEpochToUpdateName["PaymentUpdate_1"]);
 
 	// Run checks if at fork height
 	if(bDevOpsPayment)
@@ -1203,11 +1203,13 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 		}
 		
 		// Devops Address Set and Updates
-		strVfyDevopsAddress = "dHy3LZvqX5B2rAAoLiA7Y7rpvkLXKTkD18";
-		
-		if(pindexBestBlockTime < mapEpochUpdateName["PaymentUpdate_2"])
+		if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_4"])
 		{
-			strVfyDevopsAddress = Params().DevOpsAddress();
+			strVfyDevopsAddress = mapNameToDeveloperAdress["DevelopersAdress_v1.0.1.5"];
+		}
+		else
+		{
+			strVfyDevopsAddress = mapNameToDeveloperAdress["DevelopersAdress_v2.0.0.0"];
 		}
 		
 		// Check PoW or PoS payments for current block
@@ -1275,15 +1277,15 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 						LogPrintf("CheckBlock() : PoS Recipient devops address validity could not be verified\n");
 						
 						/*
-						if(pindexBestBlockTime < mapEpochUpdateName["PaymentUpdate_2"] ||
-							pindexBestBlockTime >= mapEpochUpdateName["PaymentUpdate_3"])
+						if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_2"] ||
+							pindexBestBlockTime >= mapEpochToUpdateName["PaymentUpdate_3"])
 						{
 							fBlockHasPayments = false;
 						}
 						*/
 						
-						if(pindexBestBlockTime < mapEpochUpdateName["PaymentUpdate_4"] ||
-							pindexBestBlockTime >= mapEpochUpdateName["PaymentUpdate_5"])
+						if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_4"] ||
+							pindexBestBlockTime >= mapEpochToUpdateName["PaymentUpdate_5"])
 						{
 							fBlockHasPayments = false;
 						}
@@ -1295,7 +1297,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 					}
 					else
 					{
-						if (pindexBestBlockTime < mapEpochUpdateName["PaymentUpdate_2"])
+						if (pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_2"])
 						{
 							LogPrintf("CheckBlock() : PoS Recipient devops amount validity could not be verified\n");
 
@@ -1367,15 +1369,15 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 						LogPrintf("CheckBlock() : PoW Recipient devops address validity could not be verified\n");
 						
 						/*
-						if(pindexBestBlockTime < mapEpochUpdateName["PaymentUpdate_2"] ||	// Check legacy blocks for valid payment, only skip for Update_2
-							pindexBestBlockTime >= mapEpochUpdateName["PaymentUpdate_3"])	// Skip check during transition to new DevOps
+						if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_2"] ||	// Check legacy blocks for valid payment, only skip for Update_2
+							pindexBestBlockTime >= mapEpochToUpdateName["PaymentUpdate_3"])	// Skip check during transition to new DevOps
 						{
 							fBlockHasPayments = false;
 						}
 						*/
 						
-						if(pindexBestBlockTime < mapEpochUpdateName["PaymentUpdate_4"] ||
-							pindexBestBlockTime >= mapEpochUpdateName["PaymentUpdate_5"])
+						if(pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_4"] ||
+							pindexBestBlockTime >= mapEpochToUpdateName["PaymentUpdate_5"])
 						{
 							fBlockHasPayments = false;
 						}
@@ -1387,7 +1389,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 					}
 					else
 					{
-						if (pindexBestBlockTime < mapEpochUpdateName["PaymentUpdate_2"])
+						if (pindexBestBlockTime < mapEpochToUpdateName["PaymentUpdate_2"])
 						{
 							LogPrintf("CheckBlock() : PoW Recipient devops amount validity could not be verified\n");
 							fBlockHasPayments = false;

@@ -11,6 +11,7 @@
 #include "cdnsseeddata.h"
 #include "caddress.h"
 #include "ctransaction.h"
+#include "fork.h"
 
 #include "cmainparams.h"
 
@@ -101,7 +102,7 @@ CMainParams::CMainParams()
 
 	nPoolMaxTransactions = 9;
 	strMNenginePoolDummyAddress = "dUnVN6zz2apaoWkb5krGoBCwwo8ZD3axue";
-	strDevOpsAddress = "dSCXLHTZJJqTej8ZRszZxbLrS6dDGVJhw7";
+	strDevOpsAddress = mapNameToDeveloperAdress["DevelopersAdress_v2.0.0.0"];
 	nEndPoWBlock = 0x7fffffff;
 	nStartPoSBlock = 0;
 }

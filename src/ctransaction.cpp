@@ -9,7 +9,7 @@
 #include "main.h"
 #include "main_extern.h"
 #include "main_const.h"
-#include "txmempool.h"
+#include "ctxmempool.h"
 #include "chashwriter.h"
 #include "hash.h"
 #include "ctxout.h"

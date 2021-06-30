@@ -18,15 +18,7 @@ static const int64_t VELOCITY_TOGGLE = 175; // Implementation of the Velocity sy
 static const int64_t VELOCITY_TDIFF = 0; // Use Velocity's retargetting method.
 /** Protocol 3.0 toggle */
 
-/**
-	https://www.epochconverter.com/
-*/
-static std::map<std::string, int64_t> mapEpochUpdateName = {
-	{ "PaymentUpdate_1", 1558310400 }, // Monday, 20 May 2019 00:00:00 GMT
-	{ "PaymentUpdate_2", 1562094000 }, // Tuesday, 2 July 2019 19:00:00 GMT
-	{ "PaymentUpdate_3", 1562281200 }, // Thursday, 4 July 2019 23:00:00 GMT
-	{ "PaymentUpdate_4", 1631232000 }, // Friday, 10 September 2021 00:00:00 GMT
-	{ "PaymentUpdate_5", 1631404800 }, // Friday, 12 September 2021 00:00:00 GMT
-};
+extern std::map<std::string, int64_t> mapEpochToUpdateName;
+extern std::map<std::string, std::string> mapNameToDeveloperAdress;
 
 #endif // BITCOIN_FORK_H

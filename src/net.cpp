@@ -31,7 +31,7 @@
 #include "net/cbandb.h"
 #include "net/cnetcleanup.h"
 #include "net/cnetmessage.h"
-#include "txmempool.h"
+#include "ctxmempool.h"
 #include "cdnsseeddata.h"
 #include "protocol.h"
 #include "caddrman.h"

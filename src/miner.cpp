@@ -24,7 +24,7 @@
 #include "script.h"
 #include "net.h"
 #include "main_const.h"
-#include "txmempool.h"
+#include "ctxmempool.h"
 #include "ctxout.h"
 #include "ctransaction.h"
 #include "main_extern.h"
@@ -447,7 +447,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
             // Check for payment update fork
             if(block_time > 0)
 			{
-                if(block_time > mapEpochUpdateName["PaymentUpdate_2"]) // Monday, May 20, 2019 12:00:00 AM
+                if(block_time > mapEpochToUpdateName["PaymentUpdate_2"]) // Monday, May 20, 2019 12:00:00 AM
 				{
                     // masternode/devops payment
 					int64_t blockReward = GetProofOfWorkReward(pindexPrev->nHeight + 1, nFees);
@@ -472,13 +472,13 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
                     CBitcoinAddress devopaddress;
                     if (Params().NetworkID() == CChainParams_Network::MAIN)
 					{
-                        if(GetTime() < mapEpochUpdateName["PaymentUpdate_2"])
+                        if(GetTime() < mapEpochToUpdateName["PaymentUpdate_4"])
 						{
-							devopaddress = CBitcoinAddress("dSCXLHTZJJqTej8ZRszZxbLrS6dDGVJhw7");
-						} // TODO: nothing, already set to a valid DigitalNote address
+							devopaddress = CBitcoinAddress(mapNameToDeveloperAdress["DevelopersAdress_v1.0.1.5"]);
+						}
                         else
 						{
-							devopaddress = CBitcoinAddress("dHy3LZvqX5B2rAAoLiA7Y7rpvkLXKTkD18");
+							devopaddress = CBitcoinAddress(mapNameToDeveloperAdress["DevelopersAdress_v2.0.0.0"]);
 						}
                     }
 					else if (Params().NetworkID() == CChainParams_Network::TESTNET)
