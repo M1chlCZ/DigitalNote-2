@@ -1561,8 +1561,12 @@ bool CBlock::AcceptBlock()
 	
     // Check that all transactions are finalized
     for(const CTransaction& tx : vtx)
-	{	
-		tx_inputs_values += tx.GetValueIn(tx.GetMapTxInputs());
+	{
+		MapPrevTx mapInputs;
+		
+		tx.GetMapTxInputs(mapInputs);
+		
+		tx_inputs_values += tx.GetValueIn(mapInputs);
 		tx_outputs_values += tx.GetValueOut();
 		
         if (!IsFinalTx(tx, nHeight, GetBlockTime()))

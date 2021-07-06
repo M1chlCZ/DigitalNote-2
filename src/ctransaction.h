@@ -111,7 +111,7 @@ public:
     bool GetCoinAge(CTxDB& txdb, const CBlockIndex* pindexPrev, uint64_t& nCoinAge) const;
 
     const CTxOut& GetOutputFor(const CTxIn& input, const MapPrevTx& inputs) const;
-	MapPrevTx GetMapTxInputs() const;
+	void GetMapTxInputs(MapPrevTx& mapInputs) const;
 };
 
 #endif // CTRANSACTION_H
