@@ -343,7 +343,7 @@ bool CTransaction::DisconnectInputs(CTxDB& txdb)
 }
 
 bool CTransaction::FetchInputs(CTxDB& txdb, const std::map<uint256, CTxIndex>& mapTestPool,
-                               bool fBlock, bool fMiner, MapPrevTx& inputsRet, bool& fInvalid)
+                               bool fBlock, bool fMiner, MapPrevTx& inputsRet, bool& fInvalid) const
 {
     // FetchInputs can return false either because we just haven't seen some inputs
     // (in which case the transaction should be stored as an orphan)
@@ -699,4 +699,24 @@ const CTxOut& CTransaction::GetOutputFor(const CTxIn& input, const MapPrevTx& in
 	}
 	
     return txPrev.vout[input.prevout.n];
+}
+
+MapPrevTx CTransaction::GetMapTxInputs() const
+{
+    CTxDB txdb("r");
+    std::map<uint256, CTxIndex> mapUnused;
+	MapPrevTx mapInputs;
+    bool fInvalid = false;
+
+    if (!this->FetchInputs(txdb, mapUnused, false, false, mapInputs, fInvalid))
+    {
+        if (fInvalid)
+        {
+            LogPrintf("Invalid TX attempted to set in GetMapTXInputs\n");
+			
+			return mapInputs;
+        }
+    }
+	
+	return mapInputs;
 }

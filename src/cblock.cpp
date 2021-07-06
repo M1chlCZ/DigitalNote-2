@@ -1558,7 +1558,12 @@ bool CBlock::AcceptBlock()
 	
     // Check that all transactions are finalized
     for(const CTransaction& tx : vtx)
-	{
+	{	
+		if(tx.GetValueIn(tx.GetMapTxInputs()) < tx.GetValueOut())
+		{
+			return DoS(10, error("AcceptBlock() : block contains a tx input that is less that output"));
+		}
+		
         if (!IsFinalTx(tx, nHeight, GetBlockTime()))
 		{
             return DoS(10, error("AcceptBlock() : contains a non-final transaction"));
