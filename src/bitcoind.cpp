@@ -14,6 +14,7 @@
 #include "chainparams.h"
 #include "noui.h"
 #include "ui_translate.h"
+#include "fork.h"
 
 void WaitForShutdown(boost::thread_group* threadGroup)
 {
@@ -164,7 +165,9 @@ bool AppInit(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
 	bool fRet = false;
-
+	
+	initVersionInformation();
+	
 	// Connect bitcoind signal handlers
 	noui_connect();
 

@@ -26,4 +26,6 @@ struct VersionInformation {
 
 extern std::map<std::string, VersionInformation> mapVersionInformation;
 
+void initVersionInformation();
+
 #endif // BITCOIN_FORK_H
