@@ -1556,18 +1556,24 @@ bool CBlock::AcceptBlock()
         return error("AcceptBlock() : block's timestamp is too early");
 	}
 	
+	CAmount tx_inputs_values = 0;
+	CAmount tx_outputs_values = 0;
+	
     // Check that all transactions are finalized
     for(const CTransaction& tx : vtx)
 	{	
-		if(tx.GetValueIn(tx.GetMapTxInputs()) < tx.GetValueOut())
-		{
-			return DoS(10, error("AcceptBlock() : block contains a tx input that is less that output"));
-		}
+		tx_inputs_values += tx.GetValueIn(tx.GetMapTxInputs());
+		tx_outputs_values += tx.GetValueOut();
 		
         if (!IsFinalTx(tx, nHeight, GetBlockTime()))
 		{
             return DoS(10, error("AcceptBlock() : contains a non-final transaction"));
 		}
+	}
+	
+	if(tx_inputs_values < tx_outputs_values)
+	{
+		return DoS(10, error("AcceptBlock() : block contains a tx input that is less that output"));
 	}
 	
     // Check that the block chain matches the known block chain up to a checkpoint
