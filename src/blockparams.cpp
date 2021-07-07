@@ -108,7 +108,7 @@ void VRXswngdebug()
     LogPrintf("Time since last %s block: %u: \n",difType.c_str(),difTime);
 	
     // Handle updated versions as well as legacy
-    if(GetTime() > mapVersionInformation["v1.0.1.5"].start)
+    if(GetTime() > VERION_1_0_1_5_MANDATORY_UPDATE_START)
 	{
         debugHourRounds = hourRounds;
         debugTerminalAverage = TerminalAverage;
@@ -443,7 +443,7 @@ void VRX_ThreadCurve(const CBlockIndex* pindexLast, bool fProofOfStake)
 		}
 		
         // Version 1.2 Extended Curve Run Upgrade
-        if(pindexLast->GetBlockTime() > mapVersionInformation["v1.0.1.5"].start)
+        if(pindexLast->GetBlockTime() > VERION_1_0_1_5_MANDATORY_UPDATE_START)
 		{// ON Tuesday, Jul 02, 2019 12:00:00 PM PDT
             // Set unbiased comparison
             difTime = blkTime - cntTime;
@@ -508,18 +508,18 @@ void VRX_Dry_Run(const CBlockIndex* pindexLast)
     // Reset difficulty for payments update
     if(pindexLast->GetBlockTime() > 0)
     {
-        if(pindexLast->GetBlockTime() > mapVersionInformation["v1.0.1.5"].start) // ON Monday, May 20, 2019 12:00:00 AM
+        if(pindexLast->GetBlockTime() > VERION_1_0_1_5_MANDATORY_UPDATE_START) // ON Monday, May 20, 2019 12:00:00 AM
         {
-            if(pindexLast->GetBlockTime() < mapVersionInformation["v1.0.1.5"].start + 480) {
+            if(pindexLast->GetBlockTime() < VERION_1_0_1_5_MANDATORY_UPDATE_START + 480) {
                 fDryRun = true;
                 
 				return; // diff reset
             }
         }
 		
-        if(pindexLast->GetBlockTime() > mapVersionInformation["v1.0.1.5"].start) // ON Tuesday, Jul 02, 2019 12:00:00 PM PDT
+        if(pindexLast->GetBlockTime() > VERION_1_0_1_5_MANDATORY_UPDATE_START) // ON Tuesday, Jul 02, 2019 12:00:00 PM PDT
         {
-            if(pindexLast->GetBlockTime() < mapVersionInformation["v1.0.1.5"].start+480) {
+            if(pindexLast->GetBlockTime() < VERION_1_0_1_5_MANDATORY_UPDATE_START+480) {
                 fDryRun = true;
                 
 				return; // diff reset
@@ -755,7 +755,7 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 		/*
 			Fix wrong seesawInterval generation.
 		*/
-		if(GetTime() < mapVersionInformation["v2.0.0.0"].start)
+		if(GetTime() < VERION_2_0_0_0_MANDATORY_UPDATE_START)
 		{
 			seesawInterval =- seesawRollover;
 		}
@@ -815,7 +815,7 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 	// v1.1 payment subsidy patch
     if(pindexBest->GetBlockTime() > 0)
     {
-        if(pindexBest->GetBlockTime() > mapVersionInformation["v1.0.1.5"].start) // Monday, May 20, 2019 12:00:00 AM
+        if(pindexBest->GetBlockTime() > VERION_1_0_1_5_MANDATORY_UPDATE_START) // Monday, May 20, 2019 12:00:00 AM
         {
             // set returned value to calculated value
             ret = retDouble;
@@ -823,7 +823,7 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
         }
     }
 	
-	if(pindexBest->GetBlockTime() > mapVersionInformation["v2.0.0.0"].start)
+	if(pindexBest->GetBlockTime() > VERION_2_0_0_0_MANDATORY_UPDATE_START)
     {
 		ret = 150;
 	}

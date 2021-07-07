@@ -102,7 +102,7 @@ CMainParams::CMainParams()
 
 	nPoolMaxTransactions = 9;
 	strMNenginePoolDummyAddress = "dUnVN6zz2apaoWkb5krGoBCwwo8ZD3axue";
-	strDevOpsAddress = mapVersionInformation["v2.0.0.0"].developer_address;
+	strDevOpsAddress = VERION_2_0_0_0_DEVELOPER_ADDRESS;
 	nEndPoWBlock = 0x7fffffff;
 	nStartPoSBlock = 0;
 }

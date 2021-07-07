@@ -447,7 +447,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
             // Check for payment update fork
             if(block_time > 0)
 			{
-                if(block_time > mapVersionInformation["v1.0.1.5"].start) // Monday, May 20, 2019 12:00:00 AM
+                if(block_time > VERION_1_0_1_5_MANDATORY_UPDATE_START) // Monday, May 20, 2019 12:00:00 AM
 				{
                     // masternode/devops payment
 					int64_t blockReward = GetProofOfWorkReward(pindexPrev->nHeight + 1, nFees);
@@ -472,13 +472,13 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
                     CBitcoinAddress devopaddress;
                     if (Params().NetworkID() == CChainParams_Network::MAIN)
 					{
-                        if(GetTime() < mapVersionInformation["v2.0.0.0"].start)
+                        if(GetTime() < VERION_2_0_0_0_MANDATORY_UPDATE_START)
 						{
-							devopaddress = CBitcoinAddress(mapVersionInformation["v1.0.1.5"].developer_address);
+							devopaddress = CBitcoinAddress(VERION_1_0_1_5_DEVELOPER_ADDRESS);
 						}
                         else
 						{
-							devopaddress = CBitcoinAddress(mapVersionInformation["v2.0.0.0"].developer_address);
+							devopaddress = CBitcoinAddress(VERION_2_0_0_0_DEVELOPER_ADDRESS);
 						}
                     }
 					else if (Params().NetworkID() == CChainParams_Network::TESTNET)

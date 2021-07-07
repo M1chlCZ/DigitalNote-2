@@ -18,14 +18,44 @@ static const int64_t VELOCITY_TOGGLE = 175; // Implementation of the Velocity sy
 static const int64_t VELOCITY_TDIFF = 0; // Use Velocity's retargetting method.
 /** Protocol 3.0 toggle */
 
-struct VersionInformation {
-	int64_t start;
-	int64_t end;
-	std::string developer_address;
-};
+/*
+	Early development adresses
+*/
+#define VERION_UNKNOWN_A_MANDATORY_UPDATE_START	0		// Unknown
+#define VERION_UNKNOWN_A_MANDATORY_UPDATE_END	0		// Unknown
+#define VERION_UNKNOWN_A_DEVELOPER_ADDRESS		"Dtz6UgAxwavsnxnb7jeSRj5cgERLvV8KBy"
 
-extern std::map<std::string, VersionInformation> mapVersionInformation;
+#define VERION_UNKNOWN_B_MANDATORY_UPDATE_START	0		// Unknown
+#define VERION_UNKNOWN_B_MANDATORY_UPDATE_END	0		// Unknown
+#define VERION_UNKNOWN_B_DEVELOPER_ADDRESS		"dNXKdXpviJRV5asL2sPbsxizwfBoFgsRzq"
 
-void initVersionInformation();
+#define VERION_UNKNOWN_C_MANDATORY_UPDATE_START	0		// Unknown
+#define VERION_UNKNOWN_C_MANDATORY_UPDATE_END	0		// Unknown
+#define VERION_UNKNOWN_C_DEVELOPER_ADDRESS		"dPxigPi3gY3Za2crBUV2Sn2BDCrpX9eweo"
+
+/*
+	Update 1.0.0:
+	- Add first developer address
+*/
+#define VERION_1_0_0_0_MANDATORY_UPDATE_START	1558310400		// Monday, 20 May 2019 00:00:00 GMT
+#define VERION_1_0_0_0_MANDATORY_UPDATE_END		1558310400		// Monday, 20 May 2019 00:00:00 GMT
+#define VERION_1_0_0_0_DEVELOPER_ADDRESS		"dSCXLHTZJJqTej8ZRszZxbLrS6dDGVJhw7"
+
+/*
+	Update 1.0.1.5:
+	- Change to new developer address
+*/
+#define VERION_1_0_1_5_MANDATORY_UPDATE_START	1562094000		// Tuesday, 2 July 2019 19:00:00 GMT
+#define VERION_1_0_1_5_MANDATORY_UPDATE_END		1562281200		// Thursday, 4 July 2019 23:00:00 GMT
+#define VERION_1_0_1_5_DEVELOPER_ADDRESS		"dHy3LZvqX5B2rAAoLiA7Y7rpvkLXKTkD18"
+
+/*
+	Update 2.0.0.0:
+	- Patch security bug seesaw
+	- Because of security reasons we replaced the developer adress to a brand new one.
+*/
+#define VERION_2_0_0_0_MANDATORY_UPDATE_START	1631232000		// Friday, 10 September 2021 00:00:00 GMT
+#define VERION_2_0_0_0_MANDATORY_UPDATE_END		1631404800		// Friday, 12 September 2021 00:00:00 GMT
+#define VERION_2_0_0_0_DEVELOPER_ADDRESS		"dafC1LknpDu7eALTf5DPcnPq2dwq7f9YPE"
 
 #endif // BITCOIN_FORK_H

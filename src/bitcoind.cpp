@@ -166,8 +166,6 @@ int main(int argc, char* argv[])
 {
 	bool fRet = false;
 	
-	initVersionInformation();
-	
 	// Connect bitcoind signal handlers
 	noui_connect();
 

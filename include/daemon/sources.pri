@@ -117,7 +117,6 @@ SOURCES += src/mruset.cpp
 SOURCES += src/cautofile.cpp
 SOURCES += src/csizecomputer.cpp
 SOURCES += src/cdatastream.cpp
-SOURCES += src/fork.cpp
 
 SOURCES += src/cbignum_ctx.cpp
 SOURCES += src/cbignum.cpp
