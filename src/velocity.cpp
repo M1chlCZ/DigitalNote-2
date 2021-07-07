@@ -103,7 +103,7 @@ bool Velocity(CBlockIndex* prevBlock, CBlock* block)
 		for(const CTransaction& tx : block->vtx)
 		{
 			TXvalue = tx.GetValueOut();
-			TXinput = tx.GetValueIn(mapInputs);
+			TXinput = tx.GetValueMapIn(mapInputs);
 			TXfee = TXinput - TXvalue;
 			TXcount = block->vtx.size();
 			// TXlogic = GetPrevAccountBalance - TXinput;
@@ -200,7 +200,7 @@ bool Velocity(CBlockIndex* prevBlock, CBlock* block)
 			{
 				TXcount = block->vtx.size();
 				TXvalue = tx.GetValueOut();
-				TXinput = tx.GetValueIn(mapInputs);
+				TXinput = tx.GetValueMapIn(mapInputs);
 				TXfee = TXinput - TXvalue;
 				
 				if(TXfee > devopsPayment)

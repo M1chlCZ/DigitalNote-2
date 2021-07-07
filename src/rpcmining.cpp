@@ -776,7 +776,7 @@ json_spirit::Value getblocktemplate(const json_spirit::Array& params, bool fHelp
 		
 		if (tx.FetchInputs(txdb, mapUnused, false, false, mapInputs, fInvalid))
 		{
-			entry.push_back(json_spirit::Pair("fee", (int64_t)(tx.GetValueIn(mapInputs) - tx.GetValueOut())));
+			entry.push_back(json_spirit::Pair("fee", (int64_t)(tx.GetValueMapIn(mapInputs) - tx.GetValueOut())));
 
 			json_spirit::Array deps;
 			for(MapPrevTx::value_type& inp : mapInputs)

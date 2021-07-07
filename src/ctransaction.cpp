@@ -183,7 +183,7 @@ int64_t CTransaction::GetValueOut() const
 	return nValueOut;
 }
 
-int64_t CTransaction::GetValueIn(const MapPrevTx& inputs) const
+int64_t CTransaction::GetValueMapIn(const MapPrevTx& inputs) const
 {
     if (IsCoinBase())
 	{

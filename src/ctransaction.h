@@ -67,7 +67,7 @@ public:
         @return Sum of value of all inputs (scriptSigs)
         @see CTransaction::FetchInputs
      */
-    int64_t GetValueIn(const MapPrevTx& mapInputs) const;
+    int64_t GetValueMapIn(const MapPrevTx& mapInputs) const;
 
     friend bool operator==(const CTransaction& a, const CTransaction& b);
     friend bool operator!=(const CTransaction& a, const CTransaction& b);
