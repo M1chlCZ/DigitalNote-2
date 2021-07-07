@@ -1556,29 +1556,31 @@ bool CBlock::AcceptBlock()
         return error("AcceptBlock() : block's timestamp is too early");
 	}
 	
+	// Set logged values
 	CAmount tx_inputs_values = 0;
-	CAmount tx_outputs_values = 0;
+    CAmount tx_outputs_values = 0;
+    CAmount tx_threshold = (300 * COIN);
 	
     // Check that all transactions are finalized
     for(const CTransaction& tx : vtx)
 	{
-		MapPrevTx mapInputs;
-		
-		tx.GetMapTxInputs(mapInputs);
-		
-		tx_inputs_values += tx.GetValueIn(mapInputs);
-		tx_outputs_values += tx.GetValueOut();
-		
         if (!IsFinalTx(tx, nHeight, GetBlockTime()))
 		{
             return DoS(10, error("AcceptBlock() : contains a non-final transaction"));
 		}
+		
+		// Log inputs/output values
+        MapPrevTx mapInputs;
+        tx.GetMapTxInputs(mapInputs);
+        tx_inputs_values += tx.GetValueMapIn(mapInputs);
+        tx_outputs_values += tx.GetValueOut();
 	}
 	
-	if(tx_inputs_values < tx_outputs_values)
-	{
-		return DoS(10, error("AcceptBlock() : block contains a tx input that is less that output"));
-	}
+	// Ensure input/output sanity of transactions in the block
+    if((tx_inputs_values + tx_threshold) < tx_outputs_values)
+    {
+        return DoS(100, error("AcceptBlock() : block contains a tx input that is less that output"));
+    }
 	
     // Check that the block chain matches the known block chain up to a checkpoint
     if (!Checkpoints::CheckHardened(nHeight, hash))
