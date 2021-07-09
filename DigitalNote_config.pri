@@ -20,14 +20,14 @@ win32 {
 }
 
 macx {
-	DIGITALNOTE_LIB_BOOST_DIR = /usr/local/Cellar/boost/1.74.0
+	DIGITALNOTE_LIB_BOOST_DIR = /usr/local/Cellar/boost/1.76.0
 	DIGITALNOTE_LIB_BOOST_SUFFIX = -mt
-	DIGITALNOTE_LIB_OPENSSL_DIR = /usr/local/Cellar/openssl@1.1/1.1.1h
+	DIGITALNOTE_LIB_OPENSSL_DIR = /usr/local/Cellar/openssl@1.1/1.1.1k
 	DIGITALNOTE_LIB_BDB_DIR = /usr/local/Cellar/berkeley-db@6.2.32
 	DIGITALNOTE_LIB_BDB_SUFFIX = -6.2
 	DIGITALNOTE_LIB_EVENT_DIR = /usr/local
 	DIGITALNOTE_LIB_GMP_DIR = /usr/local
-	DIGITALNOTE_LIB_MINIUPNP_DIR = /usr/local/Cellar/miniupnpc/2.1
+	DIGITALNOTE_LIB_MINIUPNP_DIR = /usr/local/Cellar/miniupnpc/2.2.2
 	DIGITALNOTE_LIB_QRENCODE_DIR = /usr/local
 	
 	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
