@@ -345,89 +345,90 @@ bool CTransaction::DisconnectInputs(CTxDB& txdb)
 bool CTransaction::FetchInputs(CTxDB& txdb, const std::map<uint256, CTxIndex>& mapTestPool,
                                bool fBlock, bool fMiner, MapPrevTx& inputsRet, bool& fInvalid) const
 {
-    // FetchInputs can return false either because we just haven't seen some inputs
-    // (in which case the transaction should be stored as an orphan)
-    // or because the transaction is malformed (in which case the transaction should
-    // be dropped).  If tx is definitely invalid, fInvalid will be set to true.
-    fInvalid = false;
+	// FetchInputs can return false either because we just haven't seen some inputs
+	// (in which case the transaction should be stored as an orphan)
+	// or because the transaction is malformed (in which case the transaction should
+	// be dropped).  If tx is definitely invalid, fInvalid will be set to true.
+	fInvalid = false;
 
-    if (IsCoinBase())
+	if (IsCoinBase())
 	{
-        return true; // Coinbase transactions have no inputs to fetch.
+		return true; // Coinbase transactions have no inputs to fetch.
 	}
 	
-    for (unsigned int i = 0; i < vin.size(); i++)
-    {
-        COutPoint prevout = vin[i].prevout;
+	for (unsigned int i = 0; i < vin.size(); i++)
+	{
+		COutPoint prevout = vin[i].prevout;
 		
-        if (inputsRet.count(prevout.hash))
+		if (inputsRet.count(prevout.hash))
 		{
-            continue; // Got it already
+			continue; // Got it already
 		}
 		
-        // Read txindex
-        CTxIndex& txindex = inputsRet[prevout.hash].first;
-        bool fFound = true;
-        if ((fBlock || fMiner) && mapTestPool.count(prevout.hash))
-        {
-            // Get txindex from current proposed changes
-            txindex = mapTestPool.find(prevout.hash)->second;
-        }
-        else
-        {
-            // Read txindex from txdb
-            fFound = txdb.ReadTxIndex(prevout.hash, txindex);
-        }
+		// Read txindex
+		CTxIndex& txindex = inputsRet[prevout.hash].first;
 		
-        if (!fFound && (fBlock || fMiner))
+		bool fFound = true;
+		if ((fBlock || fMiner) && mapTestPool.count(prevout.hash))
 		{
-            return fMiner ? false : error("FetchInputs() : %s prev tx %s index entry not found", GetHash().ToString(),  prevout.hash.ToString());
+			// Get txindex from current proposed changes
+			txindex = mapTestPool.find(prevout.hash)->second;
+		}
+		else
+		{
+			// Read txindex from txdb
+			fFound = txdb.ReadTxIndex(prevout.hash, txindex);
 		}
 		
-        // Read txPrev
-        CTransaction& txPrev = inputsRet[prevout.hash].second;
-        
+		if (!fFound && (fBlock || fMiner))
+		{
+			return fMiner ? false : error("FetchInputs() : %s prev tx %s index entry not found", GetHash().ToString(),  prevout.hash.ToString());
+		}
+		
+		// Read txPrev
+		CTransaction& txPrev = inputsRet[prevout.hash].second;
 		if (!fFound || txindex.pos == CDiskTxPos(1,1,1))
-        {
-            // Get prev tx from single transactions in memory
-            if (!mempool.lookup(prevout.hash, txPrev))
+		{
+			// Get prev tx from single transactions in memory
+			if (!mempool.lookup(prevout.hash, txPrev))
 			{
-                return error("FetchInputs() : %s mempool Tx prev not found %s", GetHash().ToString(),  prevout.hash.ToString());
-            }
+				return error("FetchInputs() : %s mempool Tx prev not found %s", GetHash().ToString(),  prevout.hash.ToString());
+			}
 			
 			if (!fFound)
 			{
-                txindex.vSpent.resize(txPrev.vout.size());
+				txindex.vSpent.resize(txPrev.vout.size());
 			}
-        }
-        else
-        {
-            // Get prev tx from disk
-            if (!txPrev.ReadFromDisk(txindex.pos))
+		}
+		else
+		{
+			// Get prev tx from disk
+			if (!txPrev.ReadFromDisk(txindex.pos))
 			{
-                return error("FetchInputs() : %s ReadFromDisk prev tx %s failed", GetHash().ToString(),  prevout.hash.ToString());
+				return error("FetchInputs() : %s ReadFromDisk prev tx %s failed", GetHash().ToString(),  prevout.hash.ToString());
 			}
-        }
-    }
+		}
+	}
 
-    // Make sure all prevout.n indexes are valid:
-    for (unsigned int i = 0; i < vin.size(); i++)
-    {
-        const COutPoint prevout = vin[i].prevout;
-        assert(inputsRet.count(prevout.hash) != 0);
-        const CTxIndex& txindex = inputsRet[prevout.hash].first;
-        const CTransaction& txPrev = inputsRet[prevout.hash].second;
-        if (prevout.n >= txPrev.vout.size() || prevout.n >= txindex.vSpent.size())
-        {
-            // Revisit this if/when transaction replacement is implemented and allows
-            // adding inputs:
-            fInvalid = true;
+	// Make sure all prevout.n indexes are valid:
+	for (unsigned int i = 0; i < vin.size(); i++)
+	{
+		const COutPoint prevout = vin[i].prevout;
+		assert(inputsRet.count(prevout.hash) != 0);
+		const CTxIndex& txindex = inputsRet[prevout.hash].first;
+		const CTransaction& txPrev = inputsRet[prevout.hash].second;
+		
+		if (prevout.n >= txPrev.vout.size() || prevout.n >= txindex.vSpent.size())
+		{
+			// Revisit this if/when transaction replacement is implemented and allows
+			// adding inputs:
+			fInvalid = true;
 			
-            return DoS(100, error("FetchInputs() : %s prevout.n out of range %d %u %u prev tx %s\n%s", GetHash().ToString(), prevout.n, txPrev.vout.size(), txindex.vSpent.size(), prevout.hash.ToString(), txPrev.ToString()));
-        }
-    }
+			return DoS(100, error("FetchInputs() : %s prevout.n out of range %d %u %u prev tx %s\n%s", GetHash().ToString(), prevout.n, txPrev.vout.size(), txindex.vSpent.size(), prevout.hash.ToString(), txPrev.ToString()));
+		}
+	}
 
-    return true;
+	return true;
 }
 
 bool CTransaction::ConnectInputs(CTxDB& txdb, MapPrevTx inputs, std::map<uint256, CTxIndex>& mapTestPool, const CDiskTxPos& posThisTx,
@@ -685,37 +686,41 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, const CBlockIndex* pindexPrev, uint64
 
 const CTxOut& CTransaction::GetOutputFor(const CTxIn& input, const MapPrevTx& inputs) const
 {
-    MapPrevTx::const_iterator mi = inputs.find(input.prevout.hash);
-	
-    if (mi == inputs.end())
+	MapPrevTx::const_iterator mi = inputs.find(input.prevout.hash);
+
+	if (mi == inputs.end())
 	{
-        throw std::runtime_error("CTransaction::GetOutputFor() : prevout.hash not found");
+		throw std::runtime_error("CTransaction::GetOutputFor() : prevout.hash not found");
 	}
+
+	const CTransaction& txPrev = (mi->second).second;
 	
-    const CTransaction& txPrev = (mi->second).second;
-    if (input.prevout.n >= txPrev.vout.size())
+	if (input.prevout.n >= txPrev.vout.size())
 	{
-        throw std::runtime_error("CTransaction::GetOutputFor() : prevout.n out of range");
+		LogPrintf("CTransaction::GetOutputFor() : input.prevout.n = %d\n", input.prevout.n);
+		LogPrintf("CTransaction::GetOutputFor() : txPrev.vout.size() = %d\n", txPrev.vout.size());
+		
+		throw std::runtime_error("CTransaction::GetOutputFor() : prevout.n out of range");
 	}
-	
-    return txPrev.vout[input.prevout.n];
+
+	return txPrev.vout[input.prevout.n];
 }
 
-bool CTransaction::GetMapTxInputs(MapPrevTx& mapInputs) const
+bool CTransaction::GetMapTxInputs(MapPrevTx& mapInputs, bool fBlock, bool fMiner) const
 {
-    CTxDB txdb("r");
-    std::map<uint256, CTxIndex> mapUnused;
-    bool fInvalid = false;
+	CTxDB txdb("r");
+	std::map<uint256, CTxIndex> mapUnused;
+	bool fInvalid = false;
 
-    if (!this->FetchInputs(txdb, mapUnused, false, false, mapInputs, fInvalid))
-    {
-        if (fInvalid)
-        {
-            LogPrintf("Invalid TX attempted to set in GetMapTXInputs\n");
+	if (!this->FetchInputs(txdb, mapUnused, fBlock, fMiner, mapInputs, fInvalid))
+	{
+		if (fInvalid)
+		{
+			LogPrintf("Invalid TX attempted to set in GetMapTXInputs\n");
 			
 			return false;
-        }
-    }
-	
+		}
+	}
+
 	return true;
 }

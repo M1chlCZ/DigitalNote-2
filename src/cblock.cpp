@@ -1497,8 +1497,6 @@ bool CBlock::AcceptBlock()
 	CBlockIndex* pindexPrev = (*mi).second;
     int nHeight = pindexPrev->nHeight+1;
 	
-	LogPrintf("[DEBUG] AcceptBlock(): Block %d\n", nHeight);
-
     // Check created block for version control
     if (nVersion < 7)
 	{
@@ -1550,9 +1548,6 @@ bool CBlock::AcceptBlock()
         return DoS(50, error("AcceptBlock() : coinstake timestamp violation nTimeBlock=%d nTimeTx=%u", GetBlockTime(), vtx[1].nTime));
 	}
 	
-	LogPrintf("[DEBUG] AcceptBlock(): nBits = %d\n", nBits);
-	LogPrintf("[DEBUG] AcceptBlock(): GetNextTargetRequired(pindexPrev, IsProofOfStake()) = %d\n", GetNextTargetRequired(pindexPrev, IsProofOfStake()));
-
     // Check proof-of-work or proof-of-stake
 	/*
 		The following block has this case:
@@ -1569,26 +1564,45 @@ bool CBlock::AcceptBlock()
         return error("AcceptBlock() : block's timestamp is too early");
 	}
 	
-	// Set logged values
-	CAmount tx_inputs_values = 0;
-    CAmount tx_outputs_values = 0;
-	
     // Check that all transactions are finalized
     for(const CTransaction& tx : vtx)
     {
-		//LogPrintf("[DEBUG] AcceptBlock(): Check Transaction %s\n", tx.GetHash().ToString());
-		
         if (!IsFinalTx(tx, nHeight, GetBlockTime()))
 		{
             return DoS(10, error("AcceptBlock() : contains a non-final transaction"));
         }
-        
-		if(nHeight > 170)
+    }
+	
+	//if(nHeight > 394623)
+	/*
+		Bad blocks:
+			130942
+		
+		Error:
+			Checking for Velocity on block : Velocity xxx is currently Enabled
+			CHECK_PASSED: block spacing has met Velocity constraints
+			ACCEPTED: block has met all Velocity constraints
+			ERROR: FetchInputs() : c2baaeb139ed964c8abe3a2b789b3efc83ff17f7eaf25d612fcd51c1ebd91376 prev tx b76d4fc500d07cdff002d0f9de2fd6abebb41d6a4cad32348602c22edfeb4161 index entry not found
+			input.prevout.n = 0
+			txPrev.vout.size() = 0
+		
+		Conclusion:
+			This happends when the input and output transactions are in the same block.
+			Because the block hasn't accepted yet he can't find the input reference. Because input transaction hasn't been accepted yet.
+	*/
+	if(nHeight > 170 and nHeight != 130942)
+	{
+		// Set logged values
+		CAmount tx_inputs_values = 0;
+		CAmount tx_outputs_values = 0;
+		
+		// Check that all transactions are finalized
+		for(const CTransaction& tx : vtx)
 		{
 			MapPrevTx mapInputs;
 			CAmount tx_MapIn_values, tx_MapOut_values;
 
-			if(!tx.GetMapTxInputs(mapInputs))
+			if(!tx.GetMapTxInputs(mapInputs, true))
 			{
 				return DoS(10, error("AcceptBlock() : can not map tx inputs."));
 			}
@@ -1615,10 +1629,7 @@ bool CBlock::AcceptBlock()
 				return DoS(100, error("AcceptBlock(): overflow detected tx_outputs_values + tx.GetValueOut()\n"));
 			}
 		}
-    }
-	
-	if(nHeight > 170)
-	{
+
 		if((tx_inputs_values + (300 * COIN)) < tx_outputs_values)
 		{
 			CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
