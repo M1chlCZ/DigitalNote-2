@@ -701,7 +701,7 @@ const CTxOut& CTransaction::GetOutputFor(const CTxIn& input, const MapPrevTx& in
     return txPrev.vout[input.prevout.n];
 }
 
-void CTransaction::GetMapTxInputs(MapPrevTx& mapInputs) const
+bool CTransaction::GetMapTxInputs(MapPrevTx& mapInputs) const
 {
     CTxDB txdb("r");
     std::map<uint256, CTxIndex> mapUnused;
@@ -713,7 +713,9 @@ void CTransaction::GetMapTxInputs(MapPrevTx& mapInputs) const
         {
             LogPrintf("Invalid TX attempted to set in GetMapTXInputs\n");
 			
-			return;
+			return false;
         }
     }
+	
+	return true;
 }
