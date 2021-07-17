@@ -1634,8 +1634,7 @@ bool CBlock::AcceptBlock()
 		{
 			CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
 			
-			LogPrintf("[DEBUG] AcceptBlock() : Transactions inside Block %d contains inputs that is less than outputs. diff = %d\n", nHeight, tx_diff);
-			//return DoS(100, error("[DEBUG] AcceptBlock() : Transactions inside Block %d contains inputs that is less than outputs. diff = %d\n", nHeight, tx_diff));
+			return DoS(100, error("[DEBUG] AcceptBlock() : Transactions inside Block %d contains inputs that is less than outputs. diff = %d\n", nHeight, tx_diff));
 		}
 	}
 	
