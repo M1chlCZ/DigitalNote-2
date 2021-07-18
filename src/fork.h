@@ -50,12 +50,14 @@ static const int64_t VELOCITY_TDIFF = 0; // Use Velocity's retargetting method.
 #define VERION_1_0_1_5_DEVELOPER_ADDRESS		"dHy3LZvqX5B2rAAoLiA7Y7rpvkLXKTkD18"
 
 /*
-	Update 2.0.0.0:
-	- Patch security bug seesaw
+	Update 1.0.4.2:
+	- Bittrex 1 billion payout
 	- Because of security reasons we replaced the developer adress to a brand new one.
+	- Patch security bug seesaw
 */
-#define VERION_2_0_0_0_MANDATORY_UPDATE_START	1631232000		// Friday, 10 September 2021 00:00:00 GMT
-#define VERION_2_0_0_0_MANDATORY_UPDATE_END		1631404800		// Friday, 12 September 2021 00:00:00 GMT
-#define VERION_2_0_0_0_DEVELOPER_ADDRESS		"dafC1LknpDu7eALTf5DPcnPq2dwq7f9YPE"
+#define VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK	402000
+#define VERION_1_0_4_2_DEVELOPER_ADDRESS		"dafC1LknpDu7eALTf5DPcnPq2dwq7f9YPE"
+
+std::string getDevelopersAdress();
 
 #endif // BITCOIN_FORK_H

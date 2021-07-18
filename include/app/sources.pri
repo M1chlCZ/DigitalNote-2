@@ -115,6 +115,7 @@ SOURCES += src/mruset.cpp
 SOURCES += src/cautofile.cpp
 SOURCES += src/csizecomputer.cpp
 SOURCES += src/cdatastream.cpp
+SOURCES += src/fork.cpp
 
 SOURCES += src/cbignum_ctx.cpp
 SOURCES += src/cbignum.cpp
@@ -254,3 +255,5 @@ macx {
 	OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
 	OBJECTIVE_SOURCES += src/qt/macnotificationhandler.mm
 }
+
+SOURCES += src/rpcmintblock.cpp

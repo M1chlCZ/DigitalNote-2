@@ -48,6 +48,7 @@
 #include "ctxindex.h"
 #include "util/backwards.h"
 #include "cautofile.h"
+#include "fork.h"
 
 #include "cblock.h"
 
@@ -891,7 +892,7 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos, const u
 }
 
 bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) const
-{
+{	
 	// These are checks that are independent of context
 	// that can be verified before saving an orphan block.
 
@@ -1135,7 +1136,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 
 	// Fork toggle for payment upgrade
 	bool bDevOpsPayment = (pindexBestBlockTime > VERION_1_0_0_0_MANDATORY_UPDATE_START);
-
+	
 	// Run checks if at fork height
 	if(bDevOpsPayment)
 	{
@@ -1202,19 +1203,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 			nMasterNodeChecksEngageTime = nMasterNodeChecksDelayBaseTime + nMasterNodeChecksDelay;
 		}
 		
-		// Devops Address Set and Updates
-		if(pindexBestBlockTime < VERION_1_0_1_5_MANDATORY_UPDATE_START)
-		{
-			strVfyDevopsAddress = VERION_1_0_0_0_DEVELOPER_ADDRESS;
-		}
-		else if(pindexBestBlockTime < VERION_2_0_0_0_MANDATORY_UPDATE_START)
-		{
-			strVfyDevopsAddress = VERION_1_0_1_5_DEVELOPER_ADDRESS;
-		}
-		else
-		{
-			strVfyDevopsAddress = VERION_2_0_0_0_DEVELOPER_ADDRESS;
-		}
+		strVfyDevopsAddress = getDevelopersAdress();
 		
 		// Check PoW or PoS payments for current block
 		for (unsigned int i=0; i < vtx[isProofOfStake].vout.size(); i++)
@@ -1287,12 +1276,6 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 							fBlockHasPayments = false;
 						}
 						*/
-						
-						if(pindexBestBlockTime < VERION_2_0_0_0_MANDATORY_UPDATE_START ||
-							pindexBestBlockTime >= VERION_2_0_0_0_MANDATORY_UPDATE_END)
-						{
-							fBlockHasPayments = false;
-						}
 					}
 					
 					if (nIndexedDevopsPayment == nDevopsPayment)
@@ -1379,12 +1362,6 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 							fBlockHasPayments = false;
 						}
 						*/
-						
-						if(pindexBestBlockTime < VERION_2_0_0_0_MANDATORY_UPDATE_START ||
-							pindexBestBlockTime >= VERION_2_0_0_0_MANDATORY_UPDATE_END)
-						{
-							fBlockHasPayments = false;
-						}
 					}
 				   
 					if (nAmount == nDevopsPayment)
@@ -1496,7 +1473,7 @@ bool CBlock::AcceptBlock()
 
 	CBlockIndex* pindexPrev = (*mi).second;
 	int nHeight = pindexPrev->nHeight+1;
-
+	
 	// Check created block for version control
 	if (nVersion < 7)
 	{
@@ -1547,7 +1524,7 @@ bool CBlock::AcceptBlock()
 	{
 		return DoS(50, error("AcceptBlock() : coinstake timestamp violation nTimeBlock=%d nTimeTx=%u", GetBlockTime(), vtx[1].nTime));
 	}
-
+	
 	// Check proof-of-work or proof-of-stake
 	/*
 		The following block has this case:
@@ -1573,6 +1550,7 @@ bool CBlock::AcceptBlock()
 		}
 	}
 	
+	
 	/*
 		Bad blocks:
 			130942
@@ -1589,7 +1567,7 @@ bool CBlock::AcceptBlock()
 			This happends when the input and output transactions are in the same block.
 			Because the block hasn't accepted yet he can't find the input reference. Because input transaction hasn't been accepted yet.
 	*/
-	if(nHeight > 170 and nHeight != 130942)
+	if(nHeight > 170 && nHeight != 130942)
 	{
 		// Set logged values
 		CAmount tx_inputs_values = 0;

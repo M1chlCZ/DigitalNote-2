@@ -727,7 +727,7 @@ int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, i
 //
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 {
-	if(pindexBest->GetBlockTime() > VERION_2_0_0_0_MANDATORY_UPDATE_START)
+	if(pindexBest->nHeight >= VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
     {
 		return 150 * COIN;
 	}

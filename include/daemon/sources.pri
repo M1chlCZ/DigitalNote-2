@@ -117,6 +117,7 @@ SOURCES += src/mruset.cpp
 SOURCES += src/cautofile.cpp
 SOURCES += src/csizecomputer.cpp
 SOURCES += src/cdatastream.cpp
+SOURCES += src/fork.cpp
 
 SOURCES += src/cbignum_ctx.cpp
 SOURCES += src/cbignum.cpp
@@ -198,3 +199,5 @@ SOURCES += src/crypto/common/sha512.cpp
 SOURCES += src/crypto/common/aes_helper.c
 SOURCES += src/crypto/common/bmw.c
 SOURCES += src/crypto/common/echo.c
+
+SOURCES += src/rpcmintblock.cpp

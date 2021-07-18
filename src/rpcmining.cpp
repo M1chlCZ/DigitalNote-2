@@ -823,23 +823,14 @@ json_spirit::Value getblocktemplate(const json_spirit::Array& params, bool fHelp
 	result.push_back(json_spirit::Pair("transactions", transactions));
 
 	// Check for payment upgrade fork
-	if (pindexBest->GetBlockTime() > 0 and pindexBest->GetBlockTime() > VERION_2_0_0_0_MANDATORY_UPDATE_START) // Monday, May 20, 2019 12:00:00 AM
+	if (pindexBest->GetBlockTime() > 0 and pindexBest->GetBlockTime() > VERION_1_0_0_0_MANDATORY_UPDATE_START) // Monday, May 20, 2019 12:00:00 AM
 	{
-		std::string devpayee2;
+		std::string devpayee2 = getDevelopersAdress();
 		
 		// Set Masternode / DevOps payments
 		int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, networkPayment);
 		int64_t devopsPayment = GetDevOpsPayment(pindexPrev->nHeight+1, networkPayment);
-
-		if (pindexBest->GetBlockTime() < VERION_2_0_0_0_MANDATORY_UPDATE_START)
-		{
-			devpayee2 = VERION_1_0_1_5_DEVELOPER_ADDRESS;
-		}
-		else
-		{
-			devpayee2 = VERION_2_0_0_0_DEVELOPER_ADDRESS;
-		}
-
+		
 		// Include DevOps payments
 		CAmount devopsSplit = devopsPayment;
 		result.push_back(json_spirit::Pair("devops_payee", devpayee2));
