@@ -1629,12 +1629,12 @@ bool CBlock::AcceptBlock()
 				return DoS(100, error("AcceptBlock(): overflow detected tx_outputs_values + tx.GetValueOut()\n"));
 			}
 		}
-
+		
 		if((tx_inputs_values + (300 * COIN)) < tx_outputs_values)
 		{
 			CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
 			
-			return DoS(100, error("[DEBUG] AcceptBlock() : Transactions inside Block %d contains inputs that is less than outputs. diff = %d\n", nHeight, tx_diff));
+			return DoS(100, error("AcceptBlock() : Transactions inside Block %d contains inputs that is less than outputs. diff = %d\n", nHeight, tx_diff));
 		}
 	}
 	
