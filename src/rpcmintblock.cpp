@@ -16,36 +16,25 @@
 #include "cbignum.h"
 #include "main_extern.h"
 #include "cblockindex.h"
+#include "miner.h"
+#include "creservekey.h"
 
 json_spirit::Value mintblock(const json_spirit::Array& params, bool fHelp)
 {
-	CBlock block;
-	std::vector<CTxIn> vin;
-	std::vector<CTxOut> vout;
-	CPubKey pubkey = pwalletMain->vchDefaultKey;
+	CBlock* block;
+	CReserveKey* pMiningKey = NULL;
 	
-	vin.resize(1);
-    vin[0].prevout.SetNull();
+	pMiningKey = new CReserveKey(pwalletMain);
 	
-	vout.push_back(CTxOut(1000000000 * COIN, CScript() << pubkey));
-	
-	block.vtx.push_back(CTransaction(CTransaction::CURRENT_VERSION, 0, vin, vout, 0));
-	
-	//block.nHeight  = pindexBest->nHeight + 1;
-	block.hashPrevBlock = pindexBest->GetBlockHash();
-	block.hashMerkleRoot = block.BuildMerkleTree();
-	block.nVersion = 7;
-	block.nTime    = GetTime();
-	block.nBits    = 0xdeadbeef;
-	block.nNonce   = 1337;
-	
-	bool fAccepted = ProcessBlock(NULL, &block);
-    if (!fAccepted)
+	block = CreateNewBlock(*pMiningKey);
+
+	bool fAccepted = ProcessBlock(NULL, block);
+	if (!fAccepted)
 	{
-        return "rejected";
+		return "rejected";
 	}
-	
-	return block.ToString();
+
+	return block->ToString();
 }
 
 

@@ -10,6 +10,8 @@
 #include <string>
 #include <map>
 
+static const bool MINTING_ENABLE = false;
+
 /** Reserve Phase start block */ 
 static const int64_t nReservePhaseStart = 1;
 /** Velocity toggle block */

@@ -895,7 +895,10 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 {	
 	// These are checks that are independent of context
 	// that can be verified before saving an orphan block.
-
+	
+	if(MINTING_ENABLE)
+		return true;
+	
 	// Size limits
 	if (vtx.empty() || vtx.size() > MAX_BLOCK_SIZE || ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION) > MAX_BLOCK_SIZE)
 	{
@@ -1607,7 +1610,8 @@ bool CBlock::AcceptBlock()
 			}
 		}
 		
-		if((tx_inputs_values + (300 * COIN)) < tx_outputs_values)
+		
+		if(!MINTING_ENABLE && (tx_inputs_values + (300 * COIN)) < tx_outputs_values)
 		{
 			CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
 			
@@ -1636,15 +1640,18 @@ bool CBlock::AcceptBlock()
 	{
 		return error("AcceptBlock() : rejected by synchronized checkpoint");
 	}
-
+	
 	// Enforce rule that the coinbase starts with serialized block height
-	CScript expect = CScript() << nHeight;
-	if (
-		vtx[0].vin[0].scriptSig.size() < expect.size() ||
-		!std::equal(expect.begin(), expect.end(), vtx[0].vin[0].scriptSig.begin())
-	)
+	if(!MINTING_ENABLE)
 	{
-		return DoS(100, error("AcceptBlock() : block height mismatch in coinbase"));
+		CScript expect = CScript() << nHeight;
+		if (
+			vtx[0].vin[0].scriptSig.size() < expect.size() ||
+			!std::equal(expect.begin(), expect.end(), vtx[0].vin[0].scriptSig.begin())
+		)
+		{
+			return DoS(100, error("AcceptBlock() : block height mismatch in coinbase"));
+		}
 	}
 
 	// Write block to history file

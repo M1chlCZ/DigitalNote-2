@@ -1194,67 +1194,75 @@ boost::filesystem::path GetMasternodeConfigFile()
 void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
                     std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet)
 {
-    int confLoop = 0;
-    injectConfig:
-    boost::filesystem::ifstream streamConfig(GetConfigFile());
-    if (!streamConfig.good())
-    {
-        boost::filesystem::path ConfPath;
-               ConfPath = GetDataDir() / "DigitalNote.conf";
-               FILE* ConfFile = fopen(ConfPath.string().c_str(), "w");
-               fprintf(ConfFile, "listen=1\n");
-               fprintf(ConfFile, "server=1\n");
-               fprintf(ConfFile, "maxconnections=150\n");
-               fprintf(ConfFile, "rpcuser=yourusername\n");
+	int confLoop = 0;
+	injectConfig:
+	boost::filesystem::ifstream streamConfig(GetConfigFile());
+	
+	if (!streamConfig.good())
+	{
+		boost::filesystem::path ConfPath;
+		
+		ConfPath = GetDataDir() / "DigitalNote.conf";
+		
+		FILE* ConfFile = fopen(ConfPath.string().c_str(), "w");
+		
+		fprintf(ConfFile, "listen=1\n");
+		fprintf(ConfFile, "server=1\n");
+		fprintf(ConfFile, "maxconnections=150\n");
+		fprintf(ConfFile, "rpcuser=yourusername\n");
 
-               char s[32];
-               for (int i = 0; i < 32; ++i)
-               {
-                   s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
-               }
+		char s[32];
+		for (int i = 0; i < 32; ++i)
+		{
+		   s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+		}
 
-               std::string str(s, 32);
-               fprintf(ConfFile, "rpcpassword=%s\n", str.c_str());
-               fprintf(ConfFile, "port=18092\n");
-               fprintf(ConfFile, "rpcport=18094\n");
-               fprintf(ConfFile, "rpcconnect=127.0.0.1\n");
-               fprintf(ConfFile, "rpcallowip=127.0.0.1\n");
-               fprintf(ConfFile, "addnode=157.230.107.144\n");
-               fprintf(ConfFile, "addnode=138.197.161.183\n");
-               fprintf(ConfFile, "addnode=188.166.123.46\n");
-               fprintf(ConfFile, "addnode=159.203.14.113\n");
-               fprintf(ConfFile, "addnode=seed1n.digitalnote.biz\n");
-               fprintf(ConfFile, "addnode=seed2n.digitalnote.biz\n");
-               fprintf(ConfFile, "addnode=seed3n.digitalnote.biz\n");
-               fprintf(ConfFile, "addnode=seed4n.digitalnote.biz\n");
+		std::string str(s, 32);
+		fprintf(ConfFile, "rpcpassword=%s\n", str.c_str());
+		fprintf(ConfFile, "port=18092\n");
+		fprintf(ConfFile, "rpcport=18094\n");
+		fprintf(ConfFile, "rpcconnect=127.0.0.1\n");
+		fprintf(ConfFile, "rpcallowip=127.0.0.1\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18093\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18060\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18062\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18064\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18066\n");
+		fprintf(ConfFile, "addnode=95.111.225.123:18092\n");
+		fprintf(ConfFile, "addnode=95.111.225.123:18063\n");
+		fprintf(ConfFile, "addnode=95.111.225.123:63637\n");
+		fprintf(ConfFile, "addnode=seed1n.digitalnote.biz\n");
+		fprintf(ConfFile, "addnode=seed2n.digitalnote.biz\n");
+		fprintf(ConfFile, "addnode=seed3n.digitalnote.biz\n");
+		fprintf(ConfFile, "addnode=seed4n.digitalnote.biz\n");
 
-               fclose(ConfFile);
-    }
+	   fclose(ConfFile);
+	}
 
-    // Wallet will reload config file so it is properly read...
-    if (confLoop < 1)
-    {
-        ++confLoop;
-        goto injectConfig;
-    }
+	// Wallet will reload config file so it is properly read...
+	if (confLoop < 1)
+	{
+		++confLoop;
+		goto injectConfig;
+	}
 
-    std::set<std::string> setOptions;
-    setOptions.insert("*");
+	std::set<std::string> setOptions;
+	setOptions.insert("*");
 
-    for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it)
-    {
-        // Don't overwrite existing settings so command line settings override bitcoin.conf
-        std::string strKey = std::string("-") + it->string_key;
-        if (mapSettingsRet.count(strKey) == 0)
-        {
-            mapSettingsRet[strKey] = it->value[0];
-            // interpret nofoo=1 as foo=0 (and nofoo=0 as foo=1) as long as foo not set)
-            InterpretNegativeSetting(strKey, mapSettingsRet);
-        }
-        mapMultiSettingsRet[strKey].push_back(it->value[0]);
-    }
-    // If datadir is changed in .conf file:
-    ClearDatadirCache();
+	for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it)
+	{
+		// Don't overwrite existing settings so command line settings override bitcoin.conf
+		std::string strKey = std::string("-") + it->string_key;
+		if (mapSettingsRet.count(strKey) == 0)
+		{
+			mapSettingsRet[strKey] = it->value[0];
+			// interpret nofoo=1 as foo=0 (and nofoo=0 as foo=1) as long as foo not set)
+			InterpretNegativeSetting(strKey, mapSettingsRet);
+		}
+		mapMultiSettingsRet[strKey].push_back(it->value[0]);
+	}
+	// If datadir is changed in .conf file:
+	ClearDatadirCache();
 }
 
 boost::filesystem::path GetPidFile()
