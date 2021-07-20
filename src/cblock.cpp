@@ -1642,16 +1642,13 @@ bool CBlock::AcceptBlock()
 	}
 	
 	// Enforce rule that the coinbase starts with serialized block height
-	if(!MINTING_ENABLE)
+	CScript expect = CScript() << nHeight;
+	if (
+		vtx[0].vin[0].scriptSig.size() < expect.size() ||
+		!std::equal(expect.begin(), expect.end(), vtx[0].vin[0].scriptSig.begin())
+	)
 	{
-		CScript expect = CScript() << nHeight;
-		if (
-			vtx[0].vin[0].scriptSig.size() < expect.size() ||
-			!std::equal(expect.begin(), expect.end(), vtx[0].vin[0].scriptSig.begin())
-		)
-		{
-			return DoS(100, error("AcceptBlock() : block height mismatch in coinbase"));
-		}
+		return DoS(100, error("AcceptBlock() : block height mismatch in coinbase"));
 	}
 
 	// Write block to history file
