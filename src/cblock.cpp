@@ -1611,7 +1611,7 @@ bool CBlock::AcceptBlock()
 		}
 		
 		
-		if(!MINTING_ENABLE && (tx_inputs_values + (300 * COIN)) < tx_outputs_values)
+		if(nHeight != MINTING_BLOCK && (tx_inputs_values + (300 * COIN)) < tx_outputs_values)
 		{
 			CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
 			
