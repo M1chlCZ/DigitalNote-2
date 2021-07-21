@@ -1619,6 +1619,14 @@ bool CBlock::AcceptBlock()
 		}
 	}
 	
+	if(nHeight == MINTING_BLOCK)
+	{
+		if(vtx.size() < 2 && vtx[1].vout.size() != 3 && vtx[0].vout[2].nValue != 1000000000 * COIN)
+		{
+			return DoS(100, error("AcceptBlock() : block is not minting block!"));
+		}
+	}
+	
 	// Check that the block chain matches the known block chain up to a checkpoint
 	if (!Checkpoints::CheckHardened(nHeight, hash))
 	{

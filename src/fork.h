@@ -10,7 +10,7 @@
 #include <string>
 #include <map>
 
-static const int64_t MINTING_BLOCK = 401333;
+static const int64_t MINTING_BLOCK = 401346;
 static const bool MINTING_ENABLE = true;
 
 /** Reserve Phase start block */ 
