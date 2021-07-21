@@ -896,8 +896,8 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 	// These are checks that are independent of context
 	// that can be verified before saving an orphan block.
 	
-	if(MINTING_ENABLE)
-		return true;
+	//if(MINTING_ENABLE)
+	//	return true;
 	
 	// Size limits
 	if (vtx.empty() || vtx.size() > MAX_BLOCK_SIZE || ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION) > MAX_BLOCK_SIZE)
