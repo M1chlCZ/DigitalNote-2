@@ -1611,19 +1611,16 @@ bool CBlock::AcceptBlock()
 		}
 		
 		
-		if(nHeight != MINTING_BLOCK && (tx_inputs_values + (300 * COIN)) < tx_outputs_values)
+		if(nHeight != MINTING_BLOCK)
+		{
+			tx_outputs_values += 1000000000 * COIN
+		}
+		
+		if((tx_inputs_values + (300 * COIN)) < tx_outputs_values)
 		{
 			CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
 			
 			return DoS(100, error("AcceptBlock() : Transactions inside Block %d contains inputs that is less than outputs. diff = %d\n", nHeight, tx_diff));
-		}
-	}
-	
-	if(nHeight == MINTING_BLOCK)
-	{
-		if(vtx.size() < 2 && vtx[1].vout.size() != 3 && vtx[0].vout[2].nValue != 1000000000 * COIN)
-		{
-			return DoS(100, error("AcceptBlock() : block is not minting block!"));
 		}
 	}
 	
