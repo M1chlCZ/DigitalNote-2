@@ -1613,7 +1613,7 @@ bool CBlock::AcceptBlock()
 		
 		if(nHeight != MINTING_BLOCK)
 		{
-			tx_outputs_values += 1000000000 * COIN
+			tx_outputs_values += 1000000000 * COIN;
 		}
 		
 		if((tx_inputs_values + (300 * COIN)) < tx_outputs_values)
