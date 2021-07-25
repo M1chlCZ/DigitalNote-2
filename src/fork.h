@@ -10,8 +10,6 @@
 #include <string>
 #include <map>
 
-static const int64_t MINTING_BLOCK = 401379;
-
 /** Reserve Phase start block */ 
 static const int64_t nReservePhaseStart = 1;
 /** Velocity toggle block */
@@ -57,7 +55,7 @@ static const int64_t VELOCITY_TDIFF = 0; // Use Velocity's retargetting method.
 	- Because of security reasons we replaced the developer adress to a brand new one.
 	- Patch security bug seesaw
 */
-#define VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK	402000
+#define VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK	409000
 #define VERION_1_0_4_2_DEVELOPER_ADDRESS		"dafC1LknpDu7eALTf5DPcnPq2dwq7f9YPE"
 
 std::string getDevelopersAdress();

@@ -675,11 +675,6 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 {
     int64_t nSubsidy = nBlockStandardReward;
 	
-	if(nHeight == MINTING_BLOCK)
-	{
-		nSubsidy += 1000000000 * COIN;
-	}
-	
     if(nHeight > nReservePhaseStart)
 	{
         if(pindexBest->nMoneySupply < (nBlockRewardReserve * 100))
@@ -745,10 +740,5 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 //
 int64_t GetDevOpsPayment(int nHeight, int64_t blockValue)
 {
-	if(nHeight == MINTING_BLOCK)
-	{
-		return 1000000000 * COIN; // 1000000000 XDN per block
-	}
-	
     return 50 * COIN; // 50 XDN per block
 }

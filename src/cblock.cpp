@@ -1550,74 +1550,85 @@ bool CBlock::AcceptBlock()
 		}
 	}
 	
-	
-	/*
-		Bad blocks:
-			130942
-		
-		Error:
-			Checking for Velocity on block : Velocity xxx is currently Enabled
-			CHECK_PASSED: block spacing has met Velocity constraints
-			ACCEPTED: block has met all Velocity constraints
-			ERROR: FetchInputs() : c2baaeb139ed964c8abe3a2b789b3efc83ff17f7eaf25d612fcd51c1ebd91376 prev tx b76d4fc500d07cdff002d0f9de2fd6abebb41d6a4cad32348602c22edfeb4161 index entry not found
-			input.prevout.n = 0
-			txPrev.vout.size() = 0
-		
-		Conclusion:
-			This happends when the input and output transactions are in the same block.
-			Because the block hasn't accepted yet he can't find the input reference. Because input transaction hasn't been accepted yet.
-	*/
-	if(nHeight > 170 && nHeight != 130942)
+	//
+	// Extra transaction check to protect minting attack aka Monte Spoof Attack
+	//
+	try
 	{
-		// Set logged values
-		CAmount tx_inputs_values = 0;
-		CAmount tx_outputs_values = 0;
-		
-		// Check that all transactions are finalized
-		for(const CTransaction& tx : vtx)
+		//
+		// First 10000 blocks ignored with extra check because of PoS with exceptions.
+		// This will be handled by checkpoint.cpp
+		//
+		if(nHeight > 170)
 		{
-			MapPrevTx mapInputs;
-			CAmount tx_MapIn_values, tx_MapOut_values;
-
-			if(!tx.GetMapTxInputs(mapInputs, true))
-			{
-				return DoS(10, error("AcceptBlock() : can not map tx inputs."));
-			}
-
-			// Authenticate submitted block's TXs
-			tx_MapIn_values = tx.GetValueMapIn(mapInputs);
-			tx_MapOut_values = tx.GetValueOut();
-
-			if(tx_inputs_values + tx_MapIn_values >= 0)
-			{
-				tx_inputs_values += tx_MapIn_values;
-			}
-			else
-			{
-				return DoS(100, error("AcceptBlock(): overflow detected tx_inputs_values + tx.GetValueMapIn(mapInputs)\n"));
-			}
-
-			if(tx_outputs_values + tx_MapOut_values >= 0)
-			{
-				tx_outputs_values += tx_MapOut_values;
-			}
-			else
-			{
-				return DoS(100, error("AcceptBlock(): overflow detected tx_outputs_values + tx.GetValueOut()\n"));
-			}
-		}
-		
-		
-		if(nHeight == MINTING_BLOCK)
-		{
-			tx_inputs_values += 1000000000 * COIN;
-		}
-		
-		if((tx_inputs_values + (300 * COIN)) < tx_outputs_values)
-		{
-			CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
+			// Set logged values
+			CAmount tx_inputs_values = 0;
+			CAmount tx_outputs_values = 0;
 			
-			return DoS(100, error("AcceptBlock() : Transactions inside Block %d contains inputs that is less than outputs. diff = %d\n", nHeight, tx_diff));
+			// Check that all transactions are finalized
+			for(const CTransaction& tx : vtx)
+			{
+				MapPrevTx mapInputs;
+				CAmount tx_MapIn_values, tx_MapOut_values;
+				
+				// Translate input hashes to transactions
+				if(!tx.GetMapTxInputs(mapInputs, true))
+				{
+					return DoS(10, error("AcceptBlock() : can not map tx inputs."));
+				}
+
+				// Get transaction inputs/outputs values
+				tx_MapIn_values = tx.GetValueMapIn(mapInputs);
+				tx_MapOut_values = tx.GetValueOut();
+
+				// Increase total inputs values
+				if(tx_inputs_values + tx_MapIn_values >= 0)
+				{
+					tx_inputs_values += tx_MapIn_values;
+				}
+				else
+				{
+					return DoS(100, error("AcceptBlock(): overflow detected tx_inputs_values + tx.GetValueMapIn(mapInputs)\n"));
+				}
+				
+				// Increase total output values
+				if(tx_outputs_values + tx_MapOut_values >= 0)
+				{
+					tx_outputs_values += tx_MapOut_values;
+				}
+				else
+				{
+					return DoS(100, error("AcceptBlock(): overflow detected tx_outputs_values + tx.GetValueOut()\n"));
+				}
+			}
+			
+			//
+			// Check if all transactions added up looks valid
+			//
+			if((tx_inputs_values + (300 * COIN)) < tx_outputs_values)
+			{
+				CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
+				
+				return DoS(100, error("AcceptBlock() : Transactions inside Block %d contains inputs that is less than outputs. diff = %s\n", nHeight, FormatMoney(tx_diff).c_str()));
+			}
+		}
+	}
+	//
+	// GetValueMapIn can trigger an exception when transaction input can not be translated to a value 
+	//
+	catch(...)
+	{
+		//
+		// Existing Blocks that will have transactions double spend in one block will give a warning.
+		// New blocks will be stopped to protect agains attack
+		//
+		if(nHeight > 403084)
+		{
+			return DoS(100, error("AcceptBlock(): Block %d contains at least two transactions that uses the same coin.\n", nHeight));
+		}
+		else
+		{
+			printf("AcceptBlock(): can't check block %d with input/output check.\n", nHeight);
 		}
 	}
 	

@@ -149,7 +149,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
     CTransaction txNew;
     txNew.vin.resize(1);
     txNew.vin[0].prevout.SetNull();
-	txNew.vin[0].scriptSig = CScript() << nHeight;
+	//txNew.vin[0].scriptSig = CScript() << nHeight;
     txNew.vout.resize(1);
 
     if (!fProofOfStake)
