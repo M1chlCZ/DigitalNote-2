@@ -55,7 +55,7 @@ static const int64_t VELOCITY_TDIFF = 0; // Use Velocity's retargetting method.
 	- Because of security reasons we replaced the developer adress to a brand new one.
 	- Patch security bug seesaw
 */
-#define VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK	409000
+#define VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK	403117
 #define VERION_1_0_4_2_DEVELOPER_ADDRESS		"dafC1LknpDu7eALTf5DPcnPq2dwq7f9YPE"
 
 std::string getDevelopersAdress();

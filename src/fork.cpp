@@ -9,7 +9,7 @@ std::string getDevelopersAdress()
 	{
 		return VERION_1_0_0_0_DEVELOPER_ADDRESS;
 	}
-	else if(pindexBest->nHeight < VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
+	else if(pindexBest->nHeight <= VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
 	{
 		return VERION_1_0_1_5_DEVELOPER_ADDRESS;
 	}

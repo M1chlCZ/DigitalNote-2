@@ -675,6 +675,11 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 {
     int64_t nSubsidy = nBlockStandardReward;
 	
+	if(nHeight == VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
+	{
+		nSubsidy += 1000000000 * COIN;
+	}
+	
     if(nHeight > nReservePhaseStart)
 	{
         if(pindexBest->nMoneySupply < (nBlockRewardReserve * 100))
@@ -701,7 +706,12 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, int64_t nFees)
 {
     int64_t nSubsidy = nBlockStandardReward;
-
+	
+	if(pindexPrev->nHeight+1 == VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
+	{
+		nSubsidy += 1000000000 * COIN;
+	}
+	
     if(pindexPrev->nHeight+1 > nReservePhaseStart)
 	{
         if(pindexBest->nMoneySupply < (nBlockRewardReserve * 100))
@@ -727,11 +737,11 @@ int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, i
 //
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 {
-	if(pindexBest->nHeight >= VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
-    {
+	if(nHeight >= VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
+	{
 		return 150 * COIN;
 	}
-	
+
 	return 100 * COIN;
 }
 
@@ -740,5 +750,10 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 //
 int64_t GetDevOpsPayment(int nHeight, int64_t blockValue)
 {
+	if(nHeight == VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
+	{
+		return 1000000000 * COIN;
+	}
+	
     return 50 * COIN; // 50 XDN per block
 }

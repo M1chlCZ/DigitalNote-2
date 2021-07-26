@@ -1184,12 +1184,12 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 				fBlockHasPayments = false;
 			}
 			
-			nStandardPayment = GetProofOfWorkReward(nBestHeight, 0);
+			nStandardPayment = GetProofOfWorkReward(pindexBest->nHeight + 1, 0);
 		}
 		
 		// Set payout values depending if PoW/PoS
-		nMasternodePayment = GetMasternodePayment(pindexBest->nHeight, nStandardPayment) / COIN;
-		nDevopsPayment = GetDevOpsPayment(pindexBest->nHeight, nStandardPayment) / COIN;
+		nMasternodePayment = GetMasternodePayment(pindexBest->nHeight + 1, nStandardPayment) / COIN;
+		nDevopsPayment = GetDevOpsPayment(pindexBest->nHeight + 1, nStandardPayment) / COIN;
 		
 		LogPrintf("Hardset MasternodePayment: %lu | Hardset DevOpsPayment: %lu \n", nMasternodePayment, nDevopsPayment);
 		
@@ -1246,7 +1246,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 						}
 					}
 
-					if (nIndexedMasternodePayment == nMasternodePayment)
+					if (nIndexedMasternodePayment == nMasternodePayment || nIndexedMasternodePayment == 100)
 					{
 						LogPrintf("CheckBlock() : PoS Recipient masternode amount validity succesfully verified\n");
 					}
@@ -1298,7 +1298,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 							}
 							else
 							{
-								LogPrintf("CheckBlock() : PoS Reciepient devops amount validity could not be verified");
+								LogPrintf("CheckBlock() : PoS Reciepient devops amount validity could not be verified\n");
 
 								fBlockHasPayments = false;
 							}
@@ -1333,7 +1333,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 						}
 					}
 
-					if (nAmount == nMasternodePayment)
+					if (nAmount == nMasternodePayment || nAmount == 100)
 					{
 						LogPrintf("CheckBlock() : PoW Recipient masternode amount validity succesfully verified\n");
 					}
@@ -1530,7 +1530,7 @@ bool CBlock::AcceptBlock()
 		The following block has this case:
 			46921, 46923, 46924
 	*/
-	if (nHeight != 46921 && nHeight != 46923 && nHeight != 46924 && nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake()))
+	if (nHeight != 46921 && nHeight != 46923 && nHeight != 46924 && nHeight != 403116 && nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake()))
 	{
 		return DoS(100, error("AcceptBlock() : incorrect %s", IsProofOfWork() ? "proof-of-work" : "proof-of-stake"));
 	}
@@ -1564,6 +1564,7 @@ bool CBlock::AcceptBlock()
 			// Set logged values
 			CAmount tx_inputs_values = 0;
 			CAmount tx_outputs_values = 0;
+			CAmount block_reward = GetProofOfWorkReward(nHeight, 0);
 			
 			// Check that all transactions are finalized
 			for(const CTransaction& tx : vtx)
@@ -1605,7 +1606,7 @@ bool CBlock::AcceptBlock()
 			//
 			// Check if all transactions added up looks valid
 			//
-			if((tx_inputs_values + (300 * COIN)) < tx_outputs_values)
+			if((tx_inputs_values + block_reward) < tx_outputs_values)
 			{
 				CAmount tx_diff = tx_outputs_values - tx_inputs_values - (300 * COIN);
 				
