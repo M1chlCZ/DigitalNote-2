@@ -1,7 +1,7 @@
 **PLEASE NOTE:** MASTER branch now is for stable pre-release updates. We have developed a RELEASE branch for latest OFFICIAL Releases. Please use the following clone command to retrieve the latest release version
 
 ```
-git clone -b release --single-branch https://github.com/DigitalNoteXDN/DigitalNote-2 DigitalNote
+git clone --single-branch https://github.com/IamLupo/DigitalNote-2.git DigitalNote
 ```
 
 DigitalNote [XDN] 2014-2018 (CryptoNote Base), 2018-2020 (Current) integration/staging tree
@@ -113,6 +113,7 @@ sudo apt-get install -y qt5-default
 sudo apt-get install -y qttools5-dev-tools
 sudo apt-get install -y miniupnpc
 sudo apt-get install -y qt5-qmake
+sudo apt-get install -y libevent-dev
 ```
 
 ### Dependencies build and link
@@ -132,23 +133,24 @@ export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
 
 ### GitHub pull (Source Download)
 ```
-cd ~
-git clone https://github.com/DigitalNoteXDN/DigitalNote-2 DigitalNote
+git clone --single-branch https://github.com/IamLupo/DigitalNote-2.git DigitalNote
+cd DigitalNote
 ```
 
 ### Build DigitalNote daemon
+
+With UPNP:
 ```
-cd ~
-cd ~/DigitalNote/src
-chmod a+x obj
-chmod a+x leveldb/build_detect_platform
-chmod a+x secp256k1
-chmod a+x leveldb
-chmod a+x ~/DigitalNote/src
-chmod a+x ~/DigitalNote
-make -f makefile.unix USE_UPNP=-
-cd ~
-sudo cp -r ~/DigitalNote/src/DigitalNoted /usr/local/bin/DigitalNoted
+qmake -qt=qt5 DigitalNote.daemon.pro USE_FORCE_STD_17=1
+make -j 4
+sudo cp -r DigitalNoted /usr/local/bin/DigitalNoted
+```
+
+**Recommended Without** UPNP:
+```
+qmake -qt=qt5 DigitalNote.daemon.pro USE_FORCE_STD_17=1 USE_UPNP=-
+make -j 4
+sudo cp -r DigitalNoted /usr/local/bin/DigitalNoted
 ```
 
 ### (Optional) Build DigitalNote-QT (GUI wallet) on Linux 
@@ -162,21 +164,16 @@ export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
 ```
 
 With UPNP:
-
 ```
-cd ~/DigitalNote
-qmake -qt=qt5
-make
+qmake -qt=qt5 DigitalNote.app.pro USE_FORCE_STD_17=1 USE_UPNP=- USE_DBUS=1 USE_QRCODE=1
+make -j 4
 ```
 
 **Recommended Without** UPNP:
-
 ```
-cd ~/DigitalNote
-qmake -qt=qt5 USE_UPNP=-
-make
+qmake -qt=qt5 DigitalNote.app.pro USE_FORCE_STD_17=1 USE_UPNP=- USE_DBUS=1 USE_QRCODE=1
+make -j 4
 ```
-
 
 
 ### Create config file for daemon
@@ -209,19 +206,6 @@ ls -la ~/.XDN
 cd ~
 DigitalNoted
 DigitalNoted getinfo
-```
-
-### Troubleshooting
-### for basic troubleshooting run the following commands when compiling:
-### this is for minupnpc errors compiling
-
-```
-make clean -f makefile.unix USE_UPNP=-
-make -f makefile.unix USE_UPNP=-
-```
-### Updating daemon in bin directory
-```
-cd ~; cp -r ~/DigitalNote/src/DigitalNoted /usr/local/bin
 ```
 
 License
