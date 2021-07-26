@@ -1,7 +1,7 @@
 **PLEASE NOTE:** MASTER branch now is for stable pre-release updates. We have developed a RELEASE branch for latest OFFICIAL Releases. Please use the following clone command to retrieve the latest release version
 
 ```
-git clone -b release --single-branch https://github.com/DigitalNoteXDN/DigitalNote-2 DigitalNote
+git clone --single-branch https://github.com/IamLupo/DigitalNote-2.git DigitalNote
 ```
 
 DigitalNote [XDN] 2014-2018 (CryptoNote Base), 2018-2020 (Current) integration/staging tree
@@ -71,27 +71,86 @@ sudo -i
 ```
 ### CREATE SWAP FILE FOR DAEMON BUILD (if system has less than 2GB of RAM)
 ```
-cd ~; sudo fallocate -l 3G /swapfile; ls -lh /swapfile; sudo chmod 600 /swapfile; ls -lh /swapfile; sudo mkswap /swapfile; sudo swapon /swapfile; sudo swapon --show; sudo cp /etc/fstab /etc/fstab.bak; echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+cd ~
+sudo fallocate -l 3G /swapfile
+ls -lh /swapfile
+sudo chmod 600 /swapfile
+ls -lh /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo swapon --show
+sudo cp /etc/fstab /etc/fstab.bak
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ```
 
 ### Dependencies install
 ```
-cd ~; sudo apt-get install -y ntp git build-essential libssl-dev libdb-dev libdb++-dev libboost-all-dev libqrencode-dev libcurl4-openssl-dev curl libzip-dev; apt-get update -y; apt-get install -y git make automake build-essential libboost-all-dev; apt-get install -y yasm binutils libcurl4-openssl-dev openssl libssl-dev; sudo apt-get install -y libgmp-dev; sudo apt-get install -y libtool;
+cd ~
+sudo apt-get install -y ntp
+sudo apt-get install -y git
+sudo apt-get install -y build-essential
+sudo apt-get install -y libssl-dev
+sudo apt-get install -y libdb-dev
+sudo apt-get install -y libdb++-dev
+sudo apt-get install -y libboost-all-dev
+sudo apt-get install -y libqrencode-dev
+sudo apt-get install -y libcurl4-openssl-dev
+sudo apt-get install -y curl
+sudo apt-get install -y libzip-dev
+
+sudo apt-get update -y
+
+sudo apt-get install -y git
+sudo apt-get install -y make
+sudo apt-get install -y automake
+sudo apt-get install -y yasm
+sudo apt-get install -y binutils
+sudo apt-get install -y libcurl4-openssl-dev
+sudo apt-get install -y openssl
+sudo apt-get install -y libgmp-dev
+sudo apt-get install -y libtool
+sudo apt-get install -y qt5-default
+sudo apt-get install -y qttools5-dev-tools
+sudo apt-get install -y miniupnpc
+sudo apt-get install -y qt5-qmake
+sudo apt-get install -y libevent-dev
 ```
 
 ### Dependencies build and link
 ```
-cd ~; wget http://download.oracle.com/berkeley-db/db-6.2.32.NC.tar.gz; tar zxf db-6.2.32.NC.tar.gz; cd db-6.2.32.NC/build_unix; ../dist/configure --enable-cxx --disable-shared; make; sudo make install; sudo ln -s /usr/local/BerkeleyDB.6.2/lib/libdb-6.2.so /usr/lib/libdb-6.2.so; sudo ln -s /usr/local/BerkeleyDB.6.2/lib/libdb_cxx-6.2.so /usr/lib/libdb_cxx-6.2.so; export BDB_INCLUDE_PATH="/usr/local/BerkeleyDB.6.2/include"; export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
+cd ~;
+wget http://download.oracle.com/berkeley-db/db-6.2.32.NC.tar.gz
+tar zxf db-6.2.32.NC.tar.gz
+cd db-6.2.32.NC/build_unix
+../dist/configure --enable-cxx --disable-shared
+make
+sudo make install
+sudo ln -s /usr/local/BerkeleyDB.6.2/lib/libdb-6.2.so /usr/lib/libdb-6.2.so
+sudo ln -s /usr/local/BerkeleyDB.6.2/lib/libdb_cxx-6.2.so /usr/lib/libdb_cxx-6.2.so
+export BDB_INCLUDE_PATH="/usr/local/BerkeleyDB.6.2/include"
+export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
 ```
 
 ### GitHub pull (Source Download)
 ```
-cd ~; git clone https://github.com/DigitalNoteXDN/DigitalNote-2 DigitalNote
+git clone --single-branch https://github.com/IamLupo/DigitalNote-2.git DigitalNote
+cd DigitalNote
 ```
 
 ### Build DigitalNote daemon
+
+With UPNP:
 ```
-cd ~; cd ~/DigitalNote/src; chmod a+x obj; chmod a+x leveldb/build_detect_platform; chmod a+x secp256k1; chmod a+x leveldb; chmod a+x ~/DigitalNote/src; chmod a+x ~/DigitalNote; make -f makefile.unix USE_UPNP=-; cd ~; cp -r ~/DigitalNote/src/DigitalNoted /usr/local/bin/DigitalNoted;
+qmake -qt=qt5 DigitalNote.daemon.pro USE_FORCE_STD_17=1
+make -j 4
+sudo cp -r DigitalNoted /usr/local/bin/DigitalNoted
+```
+
+**Recommended Without** UPNP:
+```
+qmake -qt=qt5 DigitalNote.daemon.pro USE_FORCE_STD_17=1 USE_UPNP=-
+make -j 4
+sudo cp -r DigitalNoted /usr/local/bin/DigitalNoted
 ```
 
 ### (Optional) Build DigitalNote-QT (GUI wallet) on Linux 
@@ -100,26 +159,31 @@ cd ~; cd ~/DigitalNote/src; chmod a+x obj; chmod a+x leveldb/build_detect_platfo
 
 If you recompiling some other time you don't have to repeat previous steps, but need to define those variables. Skip this command if this is your first build and previous steps were performed in current terminal session.
 ```
-export BDB_INCLUDE_PATH="/usr/local/BerkeleyDB.6.2/include"; export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
+export BDB_INCLUDE_PATH="/usr/local/BerkeleyDB.6.2/include"
+export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
 ```
 
 With UPNP:
-
 ```
-cd ~; cd ~/DigitalNote; qmake -qt=qt5; make
+qmake -qt=qt5 DigitalNote.app.pro USE_FORCE_STD_17=1 USE_UPNP=- USE_DBUS=1 USE_QRCODE=1
+make -j 4
 ```
 
 **Recommended Without** UPNP:
-
 ```
-cd ~; cd ~/DigitalNote; qmake -qt=qt5 USE_UPNP=-; make
+qmake -qt=qt5 DigitalNote.app.pro USE_FORCE_STD_17=1 USE_UPNP=- USE_DBUS=1 USE_QRCODE=1
+make -j 4
 ```
-
 
 
 ### Create config file for daemon
 ```
-cd ~; sudo ufw allow 18092/tcp; sudo ufw allow 18094/tcp; sudo ufw allow 22/tcp; sudo mkdir ~/.XDN; cat << "CONFIG" >> ~/.XDN/DigitalNote.conf
+sudo ufw allow 18092/tcp
+sudo ufw allow 18094/tcp
+sudo ufw allow 22/tcp
+sudo mkdir ~/.XDN
+
+cat << "CONFIG" >> ~/.XDN/DigitalNote.conf
 listen=1
 server=1
 daemon=1
@@ -131,25 +195,17 @@ port=18092
 rpcconnect=127.0.0.1
 rpcallowip=127.0.0.1
 CONFIG
-chmod 700 ~/.XDN/DigitalNote.conf; chmod 700 ~/.XDN; ls -la ~/.XDN
+
+chmod 700 ~/.XDN/DigitalNote.conf
+chmod 700 ~/.XDN
+ls -la ~/.XDN
 ```
 
 ### Run DigitalNote daemon
 ```
-cd ~; DigitalNoted; DigitalNoted getinfo
-```
-
-### Troubleshooting
-### for basic troubleshooting run the following commands when compiling:
-### this is for minupnpc errors compiling
-
-```
-make clean -f makefile.unix USE_UPNP=-
-make -f makefile.unix USE_UPNP=-
-```
-### Updating daemon in bin directory
-```
-cd ~; cp -r ~/DigitalNote/src/DigitalNoted /usr/local/bin
+cd ~
+DigitalNoted
+DigitalNoted getinfo
 ```
 
 License

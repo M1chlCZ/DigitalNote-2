@@ -2,15 +2,19 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <boost/assign/list_of.hpp> // for 'map_list_of()'
-#include <boost/foreach.hpp>
+#include "compat.h"
 
-#include "checkpoints.h"
+#include <boost/assign/list_of.hpp> // for 'map_list_of()'
 
 #include "txdb.h"
-#include "main.h"
-#include "uint256.h"
+#include "uint/uint256.h"
+#include "cchainparams.h"
+#include "chainparams.h"
+#include "main_extern.h"
+#include "cblockindex.h"
+#include "util/backwards.h"
 
+#include "checkpoints.h"
 
 static const int nCheckpointSpan = 5000;
 
@@ -40,6 +44,8 @@ namespace Checkpoints
         (67500,   uint256("0x4df36f82141ce789aa64d80908aafca145d09f5257ebb3b7550f94e2624a2d98"))
         (68200,   uint256("0x000000000005ab4fb2fec8705c51aee6b04ebf51f98bca11e61d7f41bcc51e92"))
         (190900,    uint256("0x00000000000324d80ae543f7b4882de88a6711c644dfdc596fbaab3225db859e"))
+        (190900,    uint256("0x00000000000324d80ae543f7b4882de88a6711c644dfdc596fbaab3225db859e"))
+        (394624, uint256("b426f7eeaaf3450ef78c6a8716665d3ed0ba5669ad40fb9d9497a29a088c9faf"))
     ;
 
     // TestNet has no checkpoints
@@ -65,16 +71,20 @@ namespace Checkpoints
 
     CBlockIndex* GetLastCheckpoint(const std::map<uint256, CBlockIndex*>& mapBlockIndex)
     {
-        MapCheckpoints& checkpoints = (TestNet() ? mapCheckpointsTestnet : mapCheckpoints);
+		MapCheckpoints& checkpoints = (TestNet() ? mapCheckpointsTestnet : mapCheckpoints);
 
-        BOOST_REVERSE_FOREACH(const MapCheckpoints::value_type& i, checkpoints)
-        {
-            const uint256& hash = i.second;
-            std::map<uint256, CBlockIndex*>::const_iterator t = mapBlockIndex.find(hash);
-            if (t != mapBlockIndex.end())
-                return t->second;
-        }
-        return NULL;
+		for(const MapCheckpoints::value_type& i : backwards(checkpoints))
+		{
+			const uint256& hash = i.second;
+			std::map<uint256, CBlockIndex*>::const_iterator t = mapBlockIndex.find(hash);
+			
+			if (t != mapBlockIndex.end())
+			{
+				return t->second;
+			}
+		}
+		
+		return NULL;
     }
 
     // Automatically select a suitable sync-checkpoint
