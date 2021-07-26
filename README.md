@@ -133,7 +133,8 @@ export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
 
 ### GitHub pull (Source Download)
 ```
-git clone --single-branch https://github.com/IamLupo/DigitalNote-2.git DigitalNote
+cd ~
+git clone https://github.com/IamLupo/DigitalNote-2.git DigitalNote
 cd DigitalNote
 ```
 
