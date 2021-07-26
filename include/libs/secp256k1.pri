@@ -14,7 +14,7 @@ exists($${DIGITALNOTE_LIB_SECP256K1_DIR}/.libs/libsecp256k1.a) {
 contains(COMPILE_SECP256K1, 1) {
 	#Build Secp256k1
 	# we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
-	extra_secp256k1.commands = cd $${DIGITALNOTE_LIB_SECP256K1_DIR} && chmod 755 ./autogen.sh && ./autogen.sh && ./configure --enable-module-recovery && $(MAKE) clean && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\"
+	extra_secp256k1.commands = cd $${DIGITALNOTE_LIB_SECP256K1_DIR} && chmod 755 ./autogen.sh && ./autogen.sh && ./configure --enable-module-recovery && $(MAKE) clean && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE)
 	extra_secp256k1.target = $${DIGITALNOTE_LIB_SECP256K1_DIR}/.libs/libsecp256k1.a
 	extra_secp256k1.depends = FORCE
 
