@@ -1253,7 +1253,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 							}
 						}
 
-						if (nIndexedMasternodePayment == nMasternodePayment || nIndexedMasternodePayment == 100)
+						if (nIndexedMasternodePayment == nMasternodePayment)
 						{
 							LogPrintf("CheckBlock() : PoS Recipient masternode amount validity succesfully verified\n");
 						}
@@ -1340,7 +1340,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 							}
 						}
 
-						if (nAmount == nMasternodePayment || nAmount == 100)
+						if (nAmount == nMasternodePayment)
 						{
 							LogPrintf("CheckBlock() : PoW Recipient masternode amount validity succesfully verified\n");
 						}
