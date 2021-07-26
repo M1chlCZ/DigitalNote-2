@@ -1191,12 +1191,12 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 					fBlockHasPayments = false;
 				}
 				
-				nStandardPayment = GetProofOfWorkReward(pindex->nHeight + 1, 0);
+				nStandardPayment = GetProofOfWorkReward(pindex->nHeight, 0);
 			}
 			
 			// Set payout values depending if PoW/PoS
-			nMasternodePayment = GetMasternodePayment(pindex->nHeight + 1, nStandardPayment) / COIN;
-			nDevopsPayment = GetDevOpsPayment(pindex->nHeight + 1, nStandardPayment) / COIN;
+			nMasternodePayment = GetMasternodePayment(pindex->nHeight, nStandardPayment) / COIN;
+			nDevopsPayment = GetDevOpsPayment(pindex->nHeight, nStandardPayment) / COIN;
 			
 			LogPrintf("Hardset MasternodePayment: %lu | Hardset DevOpsPayment: %lu \n", nMasternodePayment, nDevopsPayment);
 			
