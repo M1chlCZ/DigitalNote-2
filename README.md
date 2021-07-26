@@ -1,7 +1,7 @@
 DigitalNote [XDN] 2014-2018 (CryptoNote Base), 2018-2020 (Current) integration/staging tree
 ===========================================================================================
 
-http://www.digitalnote.biz
+http://www.digitalnote.org
 
 What is the DigitalNote [XDN] Blockchain?
 -----------------------------------------
