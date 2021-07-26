@@ -825,7 +825,7 @@ json_spirit::Value getblocktemplate(const json_spirit::Array& params, bool fHelp
 	// Check for payment upgrade fork
 	if (pindexBest->GetBlockTime() > 0 and pindexBest->GetBlockTime() > VERION_1_0_0_0_MANDATORY_UPDATE_START) // Monday, May 20, 2019 12:00:00 AM
 	{
-		std::string devpayee2 = getDevelopersAdress();
+		std::string devpayee2 = getDevelopersAdress(pindexBest);
 		
 		// Set Masternode / DevOps payments
 		int64_t masternodePayment = GetMasternodePayment(pindexPrev->nHeight+1, networkPayment);

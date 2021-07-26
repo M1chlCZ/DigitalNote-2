@@ -10,6 +10,8 @@
 #include <string>
 #include <map>
 
+class CBlockIndex;
+
 /** Reserve Phase start block */ 
 static const int64_t nReservePhaseStart = 1;
 /** Velocity toggle block */
@@ -58,6 +60,6 @@ static const int64_t VELOCITY_TDIFF = 0; // Use Velocity's retargetting method.
 #define VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK	403117
 #define VERION_1_0_4_2_DEVELOPER_ADDRESS		"dafC1LknpDu7eALTf5DPcnPq2dwq7f9YPE"
 
-std::string getDevelopersAdress();
+std::string getDevelopersAdress(const CBlockIndex* pindex);
 
 #endif // BITCOIN_FORK_H

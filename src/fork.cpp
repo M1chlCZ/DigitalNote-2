@@ -3,13 +3,13 @@
 
 #include "fork.h"
 
-std::string getDevelopersAdress()
+std::string getDevelopersAdress(const CBlockIndex* pindex)
 {
-	if(pindexBest->GetBlockTime() < VERION_1_0_1_5_MANDATORY_UPDATE_START)
+	if(pindex->GetBlockTime() < VERION_1_0_1_5_MANDATORY_UPDATE_START)
 	{
 		return VERION_1_0_0_0_DEVELOPER_ADDRESS;
 	}
-	else if(pindexBest->nHeight <= VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
+	else if(pindex->nHeight <= VERION_1_0_4_2_MANDATORY_UPDATE_BLOCK)
 	{
 		return VERION_1_0_1_5_DEVELOPER_ADDRESS;
 	}
