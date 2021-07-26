@@ -1223,20 +1223,30 @@ void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
 		fprintf(ConfFile, "rpcport=18094\n");
 		fprintf(ConfFile, "rpcconnect=127.0.0.1\n");
 		fprintf(ConfFile, "rpcallowip=127.0.0.1\n");
-		fprintf(ConfFile, "addnode=62.171.150.246:18093\n");
+		fprintf(ConfFile, "addnode=103.164.54.203\n");
+		fprintf(ConfFile, "addnode=192.241.147.56\n");
+		fprintf(ConfFile, "addnode=20.193.89.74\n");
+		fprintf(ConfFile, "addnode=161.97.92.102\n");
+		fprintf(ConfFile, "addnode=161.97.106.85:18060\n");
+		fprintf(ConfFile, "addnode=161.97.106.85:18061\n");
+		fprintf(ConfFile, "addnode=161.97.106.85:18062\n");
+		fprintf(ConfFile, "addnode=161.97.106.85:18063\n");
+		fprintf(ConfFile, "addnode=95.111.225.123:18063\n");
+		fprintf(ConfFile, "addnode=95.111.225.123:18092\n");
 		fprintf(ConfFile, "addnode=62.171.150.246:18060\n");
 		fprintf(ConfFile, "addnode=62.171.150.246:18062\n");
 		fprintf(ConfFile, "addnode=62.171.150.246:18064\n");
 		fprintf(ConfFile, "addnode=62.171.150.246:18066\n");
-		fprintf(ConfFile, "addnode=95.111.225.123:18092\n");
-		fprintf(ConfFile, "addnode=95.111.225.123:18063\n");
-		fprintf(ConfFile, "addnode=95.111.225.123:63637\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18068\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18070\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18072\n");
+		fprintf(ConfFile, "addnode=62.171.150.246:18093\n");
 		fprintf(ConfFile, "addnode=seed1n.digitalnote.biz\n");
 		fprintf(ConfFile, "addnode=seed2n.digitalnote.biz\n");
 		fprintf(ConfFile, "addnode=seed3n.digitalnote.biz\n");
 		fprintf(ConfFile, "addnode=seed4n.digitalnote.biz\n");
 
-	   fclose(ConfFile);
+		fclose(ConfFile);
 	}
 
 	// Wallet will reload config file so it is properly read...

@@ -86,17 +86,21 @@ CMainParams::CMainParams()
 	base58Prefixes[CChainParams_Base58Type::EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
 	base58Prefixes[CChainParams_Base58Type::EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
 
-	vSeeds.push_back(CDNSSeedData("node0",  "138.197.161.183"));
-	vSeeds.push_back(CDNSSeedData("node1",  "157.230.107.144"));
-	vSeeds.push_back(CDNSSeedData("node1",  "188.166.123.46"));
-	vSeeds.push_back(CDNSSeedData("node1",  "159.203.14.113"));
-	vSeeds.push_back(CDNSSeedData("node1",  "199.175.54.187"));
-	vSeeds.push_back(CDNSSeedData("node1",  "157.230.107.144"));
-	vSeeds.push_back(CDNSSeedData("node1",  "138.197.161.183"));
-	vSeeds.push_back(CDNSSeedData("node2",  "seed1n.digitalnote.biz"));
-	vSeeds.push_back(CDNSSeedData("node3",  "seed2n.digitalnote.biz"));
-	vSeeds.push_back(CDNSSeedData("node4",  "seed3n.digitalnote.biz"));
-	vSeeds.push_back(CDNSSeedData("node5",  "seed4n.digitalnote.biz"));
+	vSeeds.push_back(CDNSSeedData("node0",  "103.164.54.203"));
+	vSeeds.push_back(CDNSSeedData("node1",  "192.241.147.56"));
+	vSeeds.push_back(CDNSSeedData("node2",  "20.193.89.74"));
+	vSeeds.push_back(CDNSSeedData("node3",  "161.97.92.102"));
+	vSeeds.push_back(CDNSSeedData("node4",  "161.97.106.85"));
+	vSeeds.push_back(CDNSSeedData("node5",  "62.171.150.246"));
+	vSeeds.push_back(CDNSSeedData("node6",  "138.197.161.183"));
+	vSeeds.push_back(CDNSSeedData("node7",  "157.230.107.144"));
+	vSeeds.push_back(CDNSSeedData("node8",  "188.166.123.46"));
+	vSeeds.push_back(CDNSSeedData("node9",  "159.203.14.113"));
+	vSeeds.push_back(CDNSSeedData("node10", "199.175.54.187"));
+	vSeeds.push_back(CDNSSeedData("node11", "seed1n.digitalnote.biz"));
+	vSeeds.push_back(CDNSSeedData("node12", "seed2n.digitalnote.biz"));
+	vSeeds.push_back(CDNSSeedData("node13", "seed3n.digitalnote.biz"));
+	vSeeds.push_back(CDNSSeedData("node14", "seed4n.digitalnote.biz"));
 
 	convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
 
