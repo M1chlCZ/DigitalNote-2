@@ -295,7 +295,7 @@ int64_t CreateNewLock(CTransaction tx)
 {
 	int64_t nTxAge = 0;
 
-	for(CTxIn i : backwards(tx.vin))
+	for(CTxIn i : backwards<std::vector<CTxIn>>(tx.vin))
 	{
 		nTxAge = GetInputAge(i);
 		

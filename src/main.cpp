@@ -1744,7 +1744,7 @@ bool Reorganize(CTxDB& txdb, CBlockIndex* pindexNew)
 		// Queue memory transactions to resurrect.
 		// We only do this for blocks after the last checkpoint (reorganisation before that
 		// point should only happen with -reindex/-loadblock, or a misbehaving peer.
-		for(const CTransaction& tx : backwards(block.vtx))
+		for(const CTransaction& tx : backwards<std::vector<CTransaction>>(block.vtx))
 		{
 			if (!(tx.IsCoinBase() || tx.IsCoinStake()) && pindex->nHeight > Checkpoints::GetTotalBlocksEstimate())
 			{
