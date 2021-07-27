@@ -148,7 +148,7 @@ sudo cp -r DigitalNoted /usr/local/bin/DigitalNoted
 
 **Recommended Without** UPNP:
 ```
-qmake -qt=qt5 DigitalNote.daemon.pro USE_UPNP=-
+qmake -qt=qt5 DigitalNote.daemon.pro
 make -j 4
 sudo cp -r DigitalNoted /usr/local/bin/DigitalNoted
 ```
@@ -165,7 +165,7 @@ export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
 
 With UPNP:
 ```
-qmake -qt=qt5 DigitalNote.app.pro USE_DBUS=1 USE_QRCODE=1
+qmake -qt=qt5 DigitalNote.app.pro USE_UPNP=1 USE_DBUS=1 USE_QRCODE=1
 make -j 4
 ```
 
