@@ -1,6 +1,8 @@
 CONFIG += strict_c++
 CONFIG += c++17
 
+include(fix_std_cxx_17.pri)
+
 QMAKE_CXXFLAGS = 
 
 QMAKE_CXXFLAGS_WARN_ON = -fdiagnostics-show-option
