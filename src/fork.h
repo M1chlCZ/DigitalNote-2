@@ -39,8 +39,8 @@ static const int64_t VELOCITY_TDIFF = 0; // Use Velocity's retargetting method.
 	Update 1.0.0:
 	- Add first developer address
 */
-#define VERION_1_0_0_0_MANDATORY_UPDATE_START	1558310400		// Monday, 20 May 2019 00:00:00 GMT
-#define VERION_1_0_0_0_MANDATORY_UPDATE_END		1558310400		// Monday, 20 May 2019 00:00:00 GMT
+#define VERION_1_0_0_0_MANDATORY_UPDATE_START	1558310750		// Monday, 20 May 2019 00:00:00 GMT
+#define VERION_1_0_0_0_MANDATORY_UPDATE_END		1558310750		// Monday, 20 May 2019 00:00:00 GMT
 #define VERION_1_0_0_0_DEVELOPER_ADDRESS		"dSCXLHTZJJqTej8ZRszZxbLrS6dDGVJhw7"
 
 /*
