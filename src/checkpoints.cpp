@@ -73,7 +73,7 @@ namespace Checkpoints
     {
 		MapCheckpoints& checkpoints = (TestNet() ? mapCheckpointsTestnet : mapCheckpoints);
 
-		for(const MapCheckpoints::value_type& i : backwards(checkpoints))
+		for(const MapCheckpoints::value_type& i : backwards<MapCheckpoints>(checkpoints))
 		{
 			const uint256& hash = i.second;
 			std::map<uint256, CBlockIndex*>::const_iterator t = mapBlockIndex.find(hash);

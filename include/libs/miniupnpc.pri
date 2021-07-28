@@ -3,9 +3,9 @@
 #  or: qmake "USE_UPNP=-" (not supported)
 # miniupnpc (http://miniupnp.free.fr/files/) must be installed for support
 
-contains(USE_UPNP, -) {
-	message(Building without UPNP support)
-} else {
+contains(USE_UPNP, 1) {
+	message(Building UPNP support)
+	
 	win32 {
 		exists($${DIGITALNOTE_LIB_MINIUPNP_DIR}/libminiupnpc.a) {
 			message("found MiniUPNP lib")
@@ -36,4 +36,6 @@ contains(USE_UPNP, -) {
 	
 	DEFINES += MINIUPNP_STATICLIB
 	DEFINES += USE_UPNP
+} else {
+	message(Building without UPNP support)
 }

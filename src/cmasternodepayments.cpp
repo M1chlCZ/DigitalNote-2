@@ -263,7 +263,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
 
 	std::vector<CTxIn> vecLastPayments;
 
-	for(CMasternodePaymentWinner& winner : backwards(vWinning))
+	for(CMasternodePaymentWinner& winner : backwards<std::vector<CMasternodePaymentWinner>>(vWinning))
 	{
 		//if we already have the same vin - we have one full payment cycle, break
 		if(vecLastPayments.size() > (unsigned int)nMinimumAge)
@@ -301,7 +301,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
 	{
 		LogPrintf(" Find by reverse \n");
 		
-		for(CTxIn& vinLP : backwards(vecLastPayments))
+		for(CTxIn& vinLP : backwards<std::vector<CTxIn>>(vecLastPayments))
 		{
 			CMasternode* pmn = mnodeman.Find(vinLP);
 			if(pmn != NULL)

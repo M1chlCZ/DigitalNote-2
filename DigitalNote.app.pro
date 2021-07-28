@@ -1,16 +1,14 @@
 include(include/definitions.pri)
 
+TARGET = DigitalNote-qt
 DIGITALNOTE_APP_NAME = app
 DIGITALNOTE_PATH = $$PWD
 
+## Custom Configurations
 include(DigitalNote_config.pri)
 
+## Base
 include(include/base.pri)
-
-TARGET = DigitalNote-qt
-
-DEFINES += ENABLE_WALLET
-
 include(include/build_path.pri)
 include(include/compiler_settings.pri)
 include(include/security.pri)
@@ -18,6 +16,7 @@ include(include/qt.pri)
 include(include/release.pri)
 include(include/msse2.pri)
 
+## App settings
 include(include/app/qt_settings.pri)
 include(include/app/forums.pri)
 include(include/app/headers.pri)
@@ -33,7 +32,6 @@ include(include/options/use_build_info.pri)
 include(include/options/use_dbus.pri)
 include(include/options/use_pch.pri)
 include(include/options/use_unity_build.pri)
-include(include/options/use_force_std.pri)
 
 ## Libraries
 include(include/libs.pri)

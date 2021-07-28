@@ -20,3 +20,5 @@ macx {
 	
 	ICON = src/qt/res/icons/digitalnote.icns
 }
+
+DEFINES += ENABLE_WALLET

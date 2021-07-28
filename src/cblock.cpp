@@ -726,7 +726,7 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
 		}
 
 		// Connect further blocks
-		for(CBlockIndex *pindex : backwards(vpindexSecondary))
+		for(CBlockIndex *pindex : backwards<std::vector<CBlockIndex*>>(vpindexSecondary))
 		{
 			CBlock block;
 			if (!block.ReadFromDisk(pindex))

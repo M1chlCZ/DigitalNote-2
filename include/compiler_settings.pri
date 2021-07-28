@@ -3,6 +3,8 @@ CONFIG += c++17
 
 QMAKE_CXXFLAGS = 
 
+include(fix_std_cxx_17.pri)
+
 QMAKE_CXXFLAGS_WARN_ON = -fdiagnostics-show-option
 QMAKE_CXXFLAGS_WARN_ON += -fpermissive
 #QMAKE_CXXFLAGS_WARN_ON += -Wall
