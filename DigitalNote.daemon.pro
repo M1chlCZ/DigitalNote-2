@@ -20,6 +20,7 @@ include(include/msse2.pri)
 include(include/daemon/qt_settings.pri)
 include(include/daemon/headers.pri)
 include(include/daemon/sources.pri)
+include(include/daemon/translations.pri)
 
 ## Compile Options
 include(include/options/use_update_alternatives.pri)
