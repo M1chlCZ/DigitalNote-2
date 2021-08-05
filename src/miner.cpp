@@ -240,40 +240,44 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
 				
                 if (!txPrev.ReadFromDisk(txdb, txin.prevout, txindex))
                 {
-                    // This should never happen; all transactions in the memory
-                    // pool should connect to either transactions in the chain
-                    // or other transactions in the memory pool.
-                    if (!mempool.mapTx.count(txin.prevout.hash))
-                    {
-                        LogPrintf("ERROR: mempool transaction missing input\n");
-                        
-						if (fDebug)
+					#ifdef ENABLE_ORPHAN_TRANSACTIONS
+						// This should never happen; all transactions in the memory
+						// pool should connect to either transactions in the chain
+						// or other transactions in the memory pool.
+						if (!mempool.mapTx.count(txin.prevout.hash))
 						{
-							assert("mempool transaction missing input" == 0);
-                        }
-						
-						fMissingInputs = true;
-                        
-						if (porphan)
+							LogPrintf("ERROR: mempool transaction missing input\n");
+							
+							if (fDebug)
+							{
+								assert("mempool transaction missing input" == 0);
+							}
+							
+							fMissingInputs = true;
+							
+							if (porphan)
+							{
+								vOrphan.pop_back();
+							}
+							
+							break;
+						}
+
+						// Has to wait for dependencies
+						if (!porphan)
 						{
-                            vOrphan.pop_back();
+							// Use list for automatic deletion
+							vOrphan.push_back(COrphan(&tx));
+							porphan = &vOrphan.back();
 						}
 						
-						break;
-                    }
-
-                    // Has to wait for dependencies
-                    if (!porphan)
-                    {
-                        // Use list for automatic deletion
-                        vOrphan.push_back(COrphan(&tx));
-                        porphan = &vOrphan.back();
-                    }
-                    
-					mapDependers[txin.prevout.hash].push_back(porphan);
-                    porphan->setDependsOn.insert(txin.prevout.hash);
-                    nTotalIn += mempool.mapTx[txin.prevout.hash].vout[txin.prevout.n].nValue;
-                    
+						mapDependers[txin.prevout.hash].push_back(porphan);
+						porphan->setDependsOn.insert(txin.prevout.hash);
+						nTotalIn += mempool.mapTx[txin.prevout.hash].vout[txin.prevout.n].nValue;
+					#else // ENABLE_ORPHAN_TRANSACTIONS
+						fMissingInputs = true;
+					#endif // ENABLE_ORPHAN_TRANSACTIONS
+					
 					continue;
                 }
 				
@@ -297,16 +301,20 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
             // client code rounds up the size to the nearest 1K. That's good, because it gives an
             // incentive to create smaller transactions.
             double dFeePerKb =  double(nTotalIn-tx.GetValueOut()) / (double(nTxSize)/1000.0);
-
-            if (porphan)
-            {
-                porphan->dPriority = dPriority;
-                porphan->dFeePerKb = dFeePerKb;
-            }
-            else
-			{
-                vecPriority.push_back(TxPriority(dPriority, dFeePerKb, &(*mi).second));
-			}
+			
+			#ifdef ENABLE_ORPHAN_TRANSACTIONS
+				if (porphan)
+				{
+					porphan->dPriority = dPriority;
+					porphan->dFeePerKb = dFeePerKb;
+				}
+				else
+				{
+					vecPriority.push_back(TxPriority(dPriority, dFeePerKb, &(*mi).second));
+				}
+			#else // ENABLE_ORPHAN_TRANSACTIONS
+				vecPriority.push_back(TxPriority(dPriority, dFeePerKb, &(*mi).second));
+			#endif // ENABLE_ORPHAN_TRANSACTIONS
         }
 
         // Collect transactions into block
