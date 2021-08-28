@@ -239,105 +239,99 @@ std::string getOutputs(const std::string &txid)
 
 std::string getInputs(const std::string &txid)
 {
-    uint256 hash;
-    hash.SetHex(txid);
+	uint256 hash;
+	hash.SetHex(txid);
 
-    CTransaction tx;
-    uint256 hashBlock = 0;
-    if (!GetTransaction(hash, tx, hashBlock))
-        return "fail";
+	CTransaction tx;
+	uint256 hashBlock = 0;
+	if (!GetTransaction(hash, tx, hashBlock))
+		return "fail";
 
-    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-    ssTx << tx;
+	CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+	ssTx << tx;
 
-    std::string str = "";
-    for (unsigned int i = 0; i < tx.vin.size(); i++)
-    {
-        uint256 hash;
-        const CTxIn& vin = tx.vin[i];
-        hash.SetHex(vin.prevout.hash.ToString());
-        CTransaction wtxPrev;
-        uint256 hashBlock = 0;
-        if (!GetTransaction(hash, wtxPrev, hashBlock))
-             return "fail";
+	std::string str = "";
+	for (unsigned int i = 0; i < tx.vin.size(); i++)
+	{
+		uint256 hash;
+		const CTxIn& vin = tx.vin[i];
+		
+		hash.SetHex(vin.prevout.hash.ToString());
+		CTransaction wtxPrev;
+		uint256 hashBlock = 0;
+		
+		if (!GetTransaction(hash, wtxPrev, hashBlock))
+		{
+			return "fail";
+		}
+		
+		CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+		ssTx << wtxPrev;
 
-        CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-        ssTx << wtxPrev;
+		CTxDestination source;
+		ExtractDestination(wtxPrev.vout[vin.prevout.n].scriptPubKey, source);
+		CDigitalNoteAddress addressSource(source);
+		
+		double amount = convertCoins(wtxPrev.vout[vin.prevout.n].nValue);
+		
+		std::ostringstream ss_amount;
+		ss << std::fixed << std::setprecision(4) << amount;
+		
+		str.append(addressSource.ToString());
+		str.append(": ");
+		str.append(ss_amount.str());
+		str.append(" XDN");
+		str.append("\n");
+	}
 
-        CTxDestination source;
-        ExtractDestination(wtxPrev.vout[vin.prevout.n].scriptPubKey, source);
-        CDigitalNoteAddress addressSource(source);
-        std::string lol6 = addressSource.ToString();
-        const CScript target = wtxPrev.vout[vin.prevout.n].scriptPubKey;
-        double buffer = convertCoins(getInputValue(wtxPrev, target));
-		std::ostringstream ss;
-		ss << std::fixed << std::setprecision(4) << buffer;
-        std::string amount = ss.str();
-        str.append(lol6);
-        str.append(": ");
-        str.append(amount);
-        str.append(" XDN");
-        str.append("\n");
-    }
-
-    return str;
-}
-
-int64_t getInputValue(CTransaction tx, CScript target)
-{
-    for (unsigned int i = 0; i < tx.vin.size(); i++)
-    {
-        const CTxOut& txout = tx.vout[i];
-        if(txout.scriptPubKey == target)
-        {
-            return txout.nValue;
-        }
-    }
-    return 0;
+	return str;
 }
 
 double getTxFees(const std::string &txid)
 {
-    uint256 hash;
-    hash.SetHex(txid);
+	uint256 hash;
+	hash.SetHex(txid);
 
-    CTransaction tx;
-    uint256 hashBlock = 0;
-    if (!GetTransaction(hash, tx, hashBlock))
-        return 51;
+	CTransaction tx;
+	uint256 hashBlock = 0;
+	if (!GetTransaction(hash, tx, hashBlock))
+	{
+		return 51;
+	}
+	
+	CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+	ssTx << tx;
 
-    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-    ssTx << tx;
+	double out_value = 0;
+	for (unsigned int i = 0; i < tx.vout.size(); i++)
+	{
+		const CTxOut& txout = tx.vout[i];
 
-    double value = 0;
-    double buffer = 0;
-    for (unsigned int i = 0; i < tx.vout.size(); i++)
-    {
-        const CTxOut& txout = tx.vout[i];
+		out_value += convertCoins(txout.nValue);
+	}
 
-        buffer = value + convertCoins(txout.nValue);
-        value = buffer;
-    }
+	double in_value = 0;
+	
+	for (unsigned int i = 0; i < tx.vin.size(); i++)
+	{
+		uint256 hash0;
+		const CTxIn& vin = tx.vin[i];
+		hash0.SetHex(vin.prevout.hash.ToString());
+		CTransaction wtxPrev;
+		uint256 hashBlock0 = 0;
+		
+		if (!GetTransaction(hash0, wtxPrev, hashBlock0))
+		{
+			 return 0;
+		}
+		
+		CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+		ssTx << wtxPrev;
+		
+		in_value += convertCoins(wtxPrev.vout[vin.prevout.n].nValue);
+	}
 
-    double value0 = 0;
-    double buffer0 = 0;
-    for (unsigned int i = 0; i < tx.vin.size(); i++)
-    {
-        uint256 hash0;
-        const CTxIn& vin = tx.vin[i];
-        hash0.SetHex(vin.prevout.hash.ToString());
-        CTransaction wtxPrev;
-        uint256 hashBlock0 = 0;
-        if (!GetTransaction(hash0, wtxPrev, hashBlock0))
-             return 0;
-        CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-        ssTx << wtxPrev;
-        const CScript target = wtxPrev.vout[vin.prevout.n].scriptPubKey;
-        buffer0 = value0 + convertCoins(getInputValue(wtxPrev, target));
-        value0 = buffer0;
-    }
-
-    return value0 - value;
+	return in_value - out_value;
 }
 
 
