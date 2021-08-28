@@ -275,7 +275,7 @@ std::string getInputs(const std::string &txid)
 		double amount = convertCoins(wtxPrev.vout[vin.prevout.n].nValue);
 		
 		std::ostringstream ss_amount;
-		ss << std::fixed << std::setprecision(4) << amount;
+		ss_amount << std::fixed << std::setprecision(4) << amount;
 		
 		str.append(addressSource.ToString());
 		str.append(": ");
