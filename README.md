@@ -1,13 +1,7 @@
-**PLEASE NOTE:** MASTER branch now is for stable pre-release updates. We have developed a RELEASE branch for latest OFFICIAL Releases. Please use the following clone command to retrieve the latest release version
-
-```
-git clone --single-branch https://github.com/IamLupo/DigitalNote-2.git DigitalNote
-```
-
 DigitalNote [XDN] 2014-2018 (CryptoNote Base), 2018-2020 (Current) integration/staging tree
 ===========================================================================================
 
-http://www.digitalnote.biz
+http://www.digitalnote.org
 
 What is the DigitalNote [XDN] Blockchain?
 -----------------------------------------
@@ -134,7 +128,7 @@ export BDB_LIB_PATH="/usr/local/BerkeleyDB.6.2/lib"
 ### GitHub pull (Source Download)
 ```
 cd ~
-git clone https://github.com/IamLupo/DigitalNote-2.git DigitalNote
+git clone https://github.com/DigitalNoteXDN/DigitalNote-2.git DigitalNote
 cd DigitalNote
 ```
 
