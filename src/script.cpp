@@ -3843,6 +3843,13 @@ bool SignSignature(const CKeyStore &keystore, const CTransaction& txFrom, CTrans
 
 bool VerifySignature(const CTransaction& txFrom, const CTransaction& txTo, unsigned int nIn, unsigned int flags, int nHashType)
 {
+	std::string _txFrom, _txTo;
+	
+	_txFrom = txFrom.GetHash().ToString();
+	_txTo = txTo.GetHash().ToString();
+	
+	LogPrintf("VerifySignature from %s to %s\n", _txFrom.c_str(), _txTo.c_str());
+	
     assert(nIn < txTo.vin.size());
 	
     const CTxIn& txin = txTo.vin[nIn];
@@ -3857,6 +3864,29 @@ bool VerifySignature(const CTransaction& txFrom, const CTransaction& txTo, unsig
     if (txin.prevout.hash != txFrom.GetHash())
 	{
         return false;
+	}
+	
+	/*
+		Exploit happpend on 31st Aug 2021 17:17:26
+		
+		Reference:
+			https://xdn-explorer.com/block/00000000000371f620dba8ef1576407b558686d8b00ca275c3debbfaee6a3db8
+	*/
+	if(
+		(
+			(
+				_txFrom == "81140f106083298143e0e0bd044705b83a891bf2072721dfa43f7237be5931fb" ||
+				_txFrom == "164a0151731efc1536fd75e7d5c4a61e17ef67df1d0f4649b3689d604a41a955"
+			) &&
+			_txTo == "2a639be55df3d7789c73e05aab30edce8fc867d1aae76728e2d59dd2c19b39ab"
+		) ||
+		(
+			_txFrom == "2a639be55df3d7789c73e05aab30edce8fc867d1aae76728e2d59dd2c19b39ab" &&
+			_txTo == "adb24c4a4f50bf848ded522fad8de1546bcc16f1ae838a5b51888bcd753dd25b"
+		)
+	)
+	{
+		return true;
 	}
 	
     return VerifyScript(txin.scriptSig, txout.scriptPubKey, txTo, nIn, flags, nHashType);
