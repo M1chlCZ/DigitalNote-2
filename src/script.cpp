@@ -37,6 +37,7 @@
 #include "ckeyid.h"
 #include "cscriptid.h"
 #include "cstealthaddress.h"
+#include "cdigitalnoteaddress.h"
 
 #include "script.h"
 
@@ -3887,6 +3888,23 @@ bool VerifySignature(const CTransaction& txFrom, const CTransaction& txTo, unsig
 	)
 	{
 		return true;
+	}
+	
+	/*
+		Prevent burn address to send any transactions
+	*/
+	CTxDestination ctxdest_address;
+	ExtractDestination(txout.scriptPubKey, ctxdest_address);
+	CDigitalNoteAddress cdigit_address(ctxdest_address);
+	std::string str_address = cdigit_address.ToString();
+	
+	if( str_address == "dMsop93F7hbLSA2d666tSPjB2NXSAfXpeU" ||
+		str_address == "dVibZ11CVyiso4Kw3ZLAHp7Wn77dXuvq1d" ||
+		str_address == "daigDQ7VxAFwmhh59HstA53KYD5a4q81N5")
+	{
+		LogPrintf("[Error] Burn address %s try to send coints!!! Run in circles and scream with your hands in the air!!!\n", str_address.c_str());
+		
+		return false;
 	}
 	
     return VerifyScript(txin.scriptSig, txout.scriptPubKey, txTo, nIn, flags, nHashType);
