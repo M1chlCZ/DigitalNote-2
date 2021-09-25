@@ -38,6 +38,8 @@
 #include "cscriptid.h"
 #include "cstealthaddress.h"
 #include "cdigitalnoteaddress.h"
+#include "cblockindex.h"
+#include "main_extern.h"
 
 #include "script.h"
 
@@ -3898,9 +3900,15 @@ bool VerifySignature(const CTransaction& txFrom, const CTransaction& txTo, unsig
 	CDigitalNoteAddress cdigit_address(ctxdest_address);
 	std::string str_address = cdigit_address.ToString();
 	
-	if( str_address == "dMsop93F7hbLSA2d666tSPjB2NXSAfXpeU" ||
-		str_address == "dVibZ11CVyiso4Kw3ZLAHp7Wn77dXuvq1d" ||
-		str_address == "daigDQ7VxAFwmhh59HstA53KYD5a4q81N5")
+	// Burn address must be filtered and
+	// transactions with burn address that made in the past must be still valid
+	if(
+		(
+			str_address == "dMsop93F7hbLSA2d666tSPjB2NXSAfXpeU" ||
+			str_address == "dVibZ11CVyiso4Kw3ZLAHp7Wn77dXuvq1d" ||
+			str_address == "daigDQ7VxAFwmhh59HstA53KYD5a4q81N5"
+		) && pindexBest->nHeight > 429972
+	)
 	{
 		LogPrintf("[Error] Burn address %s try to send coints!!! Run in circles and scream with your hands in the air!!!\n", str_address.c_str());
 		
