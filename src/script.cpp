@@ -3910,7 +3910,7 @@ bool VerifySignature(const CTransaction& txFrom, const CTransaction& txTo, unsig
 		) && pindexBest->nHeight > 429972
 	)
 	{
-		LogPrintf("[Error] Burn address %s try to send coints!!! Run in circles and scream with your hands in the air!!!\n", str_address.c_str());
+		LogPrintf("[Error] Burn address %s trying to send coins!!! Run in circles and scream with your hands in the air!!!\n", str_address.c_str());
 		
 		return false;
 	}
