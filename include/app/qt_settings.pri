@@ -4,6 +4,8 @@ CONFIG += thread
 CONFIG += widgets
 CONFIG += openssl
 CONFIG += static
+CONFIG += lrelease
+CONFIG -= embed_translations
 CONFIG -= debug_and_release
 
 CODECFORTR = UTF-8
