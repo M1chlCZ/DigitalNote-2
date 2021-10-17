@@ -1,33 +1,27 @@
 win32 {
 	FAIL = 0
 	
-	exists($${DIGITALNOTE_LIB_OPENSSL_DIR}/libssl.a) {
-		message("found ssl lib")
-	} else {
+	!exists($${DIGITALNOTE_OPENSSL_PATH}/libssl.a) {
 		FAIL = 1
 	}
 	
-	exists($${DIGITALNOTE_LIB_OPENSSL_DIR}/libcrypto.a) {
-		message("found crypto lib")
-	} else {
+	!exists($${DIGITALNOTE_OPENSSL_PATH}/libcrypto.a) {
 		FAIL = 1
 	}
 	
 	contains(FAIL, 1) {
 		message("You need to compile openssl yourself with msys2.")
-		message("Also you need to configure the following variables:")
-		message("	DIGITALNOTE_LIB_QRENCODE_DIR = $${DOLLAR}$${DOLLAR}DIGITALNOTE_PATH/../libs/openssl-1.0.2u")
+		message("Also you need to configure the paths in 'DigitalNote_config.pri'")
+	} else {
+		message("found crypto lib")
+		message("found ssl lib")
 	}
-	
-	QMAKE_LIBDIR += $${DIGITALNOTE_LIB_OPENSSL_DIR}
-	INCLUDEPATH += $${DIGITALNOTE_LIB_OPENSSL_DIR}/include
-	DEPENDPATH += $${DIGITALNOTE_LIB_OPENSSL_DIR}/include
 }
 
-macx {
-	QMAKE_LIBDIR += $${DIGITALNOTE_LIB_OPENSSL_DIR}/lib
-	INCLUDEPATH += $${DIGITALNOTE_LIB_OPENSSL_DIR}/include
-	DEPENDPATH += $${DIGITALNOTE_LIB_OPENSSL_DIR}/include
+win32|macx {
+	QMAKE_LIBDIR += $${DIGITALNOTE_OPENSSL_LIB_PATH}
+	INCLUDEPATH += $${DIGITALNOTE_OPENSSL_INCLUDE_PATH}
+	DEPENDPATH += $${DIGITALNOTE_OPENSSL_INCLUDE_PATH}
 }
 
 LIBS += -lssl
