@@ -1,21 +1,16 @@
 win32 {
-	exists($${DIGITALNOTE_LIB_EVENT_DIR}/.libs/libevent.a) {
+	exists($${DIGITALNOTE_EVENT_PATH}/.libs/libevent.a) {
 		message("found event lib")
 	} else {
 		message("You need to compile lib event yourself.")
-		message("Also you need to configure the following variables:")
-		message("	DIGITALNOTE_LIB_GMP_DIR = $${DOLLAR}$${DOLLAR}DIGITALNOTE_PATH/../libs/libevent-2.1.11-stable")
+		message("Also you need to configure the paths in 'DigitalNote_config.pri'")
 	}
-	
-	QMAKE_LIBDIR += $${DIGITALNOTE_LIB_EVENT_DIR}/.libs
-	INCLUDEPATH += $${DIGITALNOTE_LIB_EVENT_DIR}/include
-	DEPENDPATH += $${DIGITALNOTE_LIB_EVENT_DIR}/include
 }
 
-macx {
-	QMAKE_LIBDIR += $${DIGITALNOTE_LIB_EVENT_DIR}/lib
-	INCLUDEPATH += $${DIGITALNOTE_LIB_EVENT_DIR}/include
-	DEPENDPATH += $${DIGITALNOTE_LIB_EVENT_DIR}/include
+win32|macx {
+	QMAKE_LIBDIR += $${DIGITALNOTE_EVENT_LIB_PATH}
+	INCLUDEPATH += $${DIGITALNOTE_EVENT_INCLUDE_PATH}
+	DEPENDPATH += $${DIGITALNOTE_EVENT_INCLUDE_PATH}
 }
 
 LIBS += -levent

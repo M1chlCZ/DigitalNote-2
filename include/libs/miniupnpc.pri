@@ -7,26 +7,18 @@ contains(USE_UPNP, 1) {
 	message(Building UPNP support)
 	
 	win32 {
-		exists($${DIGITALNOTE_LIB_MINIUPNP_DIR}/libminiupnpc.a) {
+		exists($${DIGITALNOTE_MINIUPNP_PATH}/libminiupnpc.a) {
 			message("found MiniUPNP lib")
 		} else {
 			message("You need to compile lib MiniUPNP yourself.")
-			message("Also you need to configure the following variables:")
-			message("	DIGITALNOTE_LIB_MINIUPNP_DIR = $${DOLLAR}$${DOLLAR}DIGITALNOTE_PATH/../libs/miniupnpc-2.1")
+			message("Also you need to configure the paths in 'DigitalNote_config.pri'")
 		}
-		
-		QMAKE_LIBDIR += $${DIGITALNOTE_LIB_MINIUPNP_DIR}
-		
-		INCLUDEPATH += $${DIGITALNOTE_LIB_MINIUPNP_DIR}/../
-		DEPENDPATH += $${DIGITALNOTE_LIB_MINIUPNP_DIR}/../
-		
-		
 	}
 	
-	macx {
-		QMAKE_LIBDIR += $${DIGITALNOTE_LIB_MINIUPNP_DIR}/lib
-		INCLUDEPATH += $${DIGITALNOTE_LIB_MINIUPNP_DIR}/include
-		DEPENDPATH += $${DIGITALNOTE_LIB_MINIUPNP_DIR}/include
+	win32|macx {
+		QMAKE_LIBDIR += $${DIGITALNOTE_MINIUPNP_LIB_PATH}
+		INCLUDEPATH += $${DIGITALNOTE_MINIUPNP_INCLUDE_PATH}
+		DEPENDPATH += $${DIGITALNOTE_MINIUPNP_INCLUDE_PATH}
 	}
 	
 	LIBS += -lminiupnpc

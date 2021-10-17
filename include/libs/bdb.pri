@@ -1,21 +1,16 @@
 win32 {
-	exists($${DIGITALNOTE_LIB_BDB_DIR}/build_unix/libdb_cxx$${DIGITALNOTE_LIB_BDB_SUFFIX}.a) {
+	exists($${DIGITALNOTE_BDB_LIB_PATH}/libdb_cxx$${DIGITALNOTE_LIB_BDB_SUFFIX}.a) {
 		message("found BerkeleyDB lib")
 	} else {
 		message("You need to compile lib BerkeleyDB yourself.")
-		message("Also you need to configure the following variables:")
-		message("	DIGITALNOTE_LIB_BDB_DIR = $${DOLLAR}$${DOLLAR}DIGITALNOTE_PATH/../libs/db-6.2.32.NC")
+		message("Also you need to configure the paths in 'DigitalNote_config.pri'")
 	}
-	
-	QMAKE_LIBDIR += $${DIGITALNOTE_LIB_BDB_DIR}/build_unix
-	INCLUDEPATH += $${DIGITALNOTE_LIB_BDB_DIR}/build_unix
-	DEPENDPATH += $${DIGITALNOTE_LIB_BDB_DIR}/build_unix
 }
 
-macx {
-	QMAKE_LIBDIR += $${DIGITALNOTE_LIB_BDB_DIR}/lib
-	INCLUDEPATH += $${DIGITALNOTE_LIB_BDB_DIR}/include
-	DEPENDPATH += $${DIGITALNOTE_LIB_BDB_DIR}/include
+win32|macx {
+	QMAKE_LIBDIR += $${DIGITALNOTE_BDB_LIB_PATH}
+	INCLUDEPATH += $${DIGITALNOTE_BDB_INCLUDE_PATH}
+	DEPENDPATH += $${DIGITALNOTE_BDB_INCLUDE_PATH}
 }
 
 LIBS += -ldb_cxx$${DIGITALNOTE_LIB_BDB_SUFFIX}

@@ -1,60 +1,49 @@
 win32 {
 	FAIL = 0
 	
-	exists($${DIGITALNOTE_LIB_BOOST_DIR}/stage/lib/libboost_system$${DIGITALNOTE_LIB_BOOST_SUFFIX}.a) {
-		message("found boost system lib")
-	} else {
+	!exists($${DIGITALNOTE_BOOST_LIB_PATH}/libboost_system$${DIGITALNOTE_BOOST_SUFFIX}.a) {
 		FAIL = 1
 	}
 	
-	exists($${DIGITALNOTE_LIB_BOOST_DIR}/stage/lib/libboost_filesystem$${DIGITALNOTE_LIB_BOOST_SUFFIX}.a) {
+	!exists($${DIGITALNOTE_BOOST_LIB_PATH}/libboost_filesystem$${DIGITALNOTE_BOOST_SUFFIX}.a) {
+		FAIL = 1
+	}
+	
+	!exists($${DIGITALNOTE_BOOST_LIB_PATH}/libboost_program_options$${DIGITALNOTE_BOOST_SUFFIX}.a) {
+		FAIL = 1
+	}
+	
+	!exists($${DIGITALNOTE_BOOST_LIB_PATH}/libboost_thread$${DIGITALNOTE_BOOST_SUFFIX}.a) {
+		FAIL = 1
+	}
+	
+	!exists($${DIGITALNOTE_BOOST_LIB_PATH}/libboost_chrono$${DIGITALNOTE_BOOST_SUFFIX}.a) {
+		FAIL = 1
+	}
+	
+	contains(FAIL, 0) {
 		message("found boost filesystem lib")
-	} else {
-		FAIL = 1
-	}
-	
-	exists($${DIGITALNOTE_LIB_BOOST_DIR}/stage/lib/libboost_program_options$${DIGITALNOTE_LIB_BOOST_SUFFIX}.a) {
 		message("found boost program options lib")
-	} else {
-		FAIL = 1
-	}
-	
-	exists($${DIGITALNOTE_LIB_BOOST_DIR}/stage/lib/libboost_thread$${DIGITALNOTE_LIB_BOOST_SUFFIX}.a) {
 		message("found boost thread lib")
-	} else {
-		FAIL = 1
-	}
-	
-	exists($${DIGITALNOTE_LIB_BOOST_DIR}/stage/lib/libboost_chrono$${DIGITALNOTE_LIB_BOOST_SUFFIX}.a) {
+		message("found boost system lib")
 		message("found boost chrono lib")
 	} else {
-		FAIL = 1
-	}
-	
-	contains(FAIL, 1) {
 		message("You need to compile boost yourself.")
-		message("Also you need to configure the following variables:")
-		message("	DIGITALNOTE_LIB_DIR = $${DOLLAR}$${DOLLAR}DIGITALNOTE_PATH/../libs")
-		message("	DIGITALNOTE_LIB_BOOST_NAME = boost_1_75_0")
-		message("	DIGITALNOTE_LIB_BOOST_SUFFIX = -mgw7-mt-d-x64-1_75")
+		message("Also you need to configure the paths in 'DigitalNote_config.pri'")
 	}
-	
-	QMAKE_LIBDIR += $${DIGITALNOTE_LIB_BOOST_DIR}/stage/lib
-	INCLUDEPATH += $${DIGITALNOTE_LIB_BOOST_DIR}
-	DEPENDPATH += $${DIGITALNOTE_LIB_BOOST_DIR}
 }
 
-macx {
-	QMAKE_LIBDIR += $${DIGITALNOTE_LIB_BOOST_DIR}/lib
-	INCLUDEPATH += $${DIGITALNOTE_LIB_BOOST_DIR}/include
-	DEPENDPATH += $${DIGITALNOTE_LIB_BOOST_DIR}/include
+win32|macx {
+	QMAKE_LIBDIR += $${DIGITALNOTE_BOOST_LIB_PATH}
+	INCLUDEPATH += $${DIGITALNOTE_BOOST_INCLUDE_PATH}
+	DEPENDPATH += $${DIGITALNOTE_BOOST_INCLUDE_PATH}
 }
 
-LIBS += -lboost_system$${DIGITALNOTE_LIB_BOOST_SUFFIX}
-LIBS += -lboost_filesystem$${DIGITALNOTE_LIB_BOOST_SUFFIX}
-LIBS += -lboost_program_options$${DIGITALNOTE_LIB_BOOST_SUFFIX}
-LIBS += -lboost_thread$${DIGITALNOTE_LIB_BOOST_SUFFIX}
-LIBS += -lboost_chrono$${DIGITALNOTE_LIB_BOOST_SUFFIX}
+LIBS += -lboost_system$${DIGITALNOTE_BOOST_SUFFIX}
+LIBS += -lboost_filesystem$${DIGITALNOTE_BOOST_SUFFIX}
+LIBS += -lboost_program_options$${DIGITALNOTE_BOOST_SUFFIX}
+LIBS += -lboost_thread$${DIGITALNOTE_BOOST_SUFFIX}
+LIBS += -lboost_chrono$${DIGITALNOTE_BOOST_SUFFIX}
 
 DEFINES += BOOST_THREAD_USE_LIB
 DEFINES += BOOST_SPIRIT_THREADSAFE
