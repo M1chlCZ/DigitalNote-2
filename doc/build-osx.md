@@ -113,6 +113,7 @@ DigitalNote-qt: Qt5 GUI Release for DigitalNote
    ```
    
 4. For builds upwards of 2.0.0.4 do the following instead of step 3.
+   Run in the ./DigitalNote-2
    ```
    cd DigitalNote 
    cd src
