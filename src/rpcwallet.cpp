@@ -2015,7 +2015,7 @@ json_spirit::Value listtransactions(const json_spirit::Array& params, bool fHelp
     return ret;
 }
 
-void ListStakeRewards(const CWalletTx& wtx, Array& ret, const isminefilter& filter)
+void ListStakeRewards(const CWalletTx& wtx, json_spirit::Array& ret, const isminefilter& filter)
 {
     CAmount nFee;
     CAmount nAmount;
@@ -2065,7 +2065,7 @@ void ListStakeRewards(const CWalletTx& wtx, Array& ret, const isminefilter& filt
     }
 }
 
-Value liststakerewards(const Array& params, bool fHelp)
+json_spirit::Value liststakerewards(const json_spirit::Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
