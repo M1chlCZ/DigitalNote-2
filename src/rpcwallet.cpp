@@ -2029,8 +2029,8 @@ void ListStakeRewards(const CWalletTx& wtx, json_spirit::Array& ret, const ismin
 
         if (nAmount > 0)
         {
-            Object entry;
-            string account;
+            json_spirit::Object entry;
+            std::string account;
 
             if (pwalletMain->mapAddressBook.count(address))
                 account = pwalletMain->mapAddressBook[address];
@@ -2101,7 +2101,7 @@ json_spirit::Value liststakerewards(const json_spirit::Array& params, bool fHelp
     if (nCount < 0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Negative count");
 
-    Array ret;
+    json_spirit::Array ret;
 
     const CWallet::TxItems & txOrdered = pwalletMain->wtxOrdered;
 
