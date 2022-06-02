@@ -2053,7 +2053,7 @@ void ListStakeRewards(const CWalletTx& wtx, json_spirit::Array& ret, const ismin
 
             if (confirms > 0)
             {
-                entry.push_back(json_spirit::Paird("blockhash", wtx.hashBlock.GetHex()));
+                entry.push_back(json_spirit::Pair("blockhash", wtx.hashBlock.GetHex()));
             }
             uint256 hash = wtx.GetHash();
             entry.push_back(json_spirit::Pair("txid", hash.GetHex()));
