@@ -2068,7 +2068,7 @@ void ListStakeRewards(const CWalletTx& wtx, json_spirit::Array& ret, const ismin
 json_spirit::Value liststakerewards(const json_spirit::Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "liststakerewards (count)\n"
             "\nReturns up to 'count' most recent stake rewards.\n"
             "\nArguments:\n"
