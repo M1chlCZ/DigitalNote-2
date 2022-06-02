@@ -99,6 +99,8 @@ public:
     void GetAccountAmounts(const std::string& strAccount, CAmount& nReceived,
                            CAmount& nSent, CAmount& nFee, const isminefilter& filter) const;
 
+     void GetStakeAmounts(CAmount& nFee, CAmount& nAmount, std::string& strSentAccount, CTxDestination& address, const isminefilter& filter) const;
+
     bool IsFromMe(const isminefilter& filter) const;
     bool IsTrusted() const;
     bool WriteToDisk();

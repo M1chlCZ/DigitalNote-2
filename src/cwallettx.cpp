@@ -734,6 +734,33 @@ void CWalletTx::GetAmounts(std::list<std::pair<CTxDestination, int64_t> >& listR
     }
 }
 
+void CWalletTx::GetStakeAmounts(CAmount& nFee, CAmount& nAmount, string& strSentAccount, CTxDestination& address, const isminefilter& filter) const
+{
+    LOCK(pwallet->cs_wallet);
+    nFee = 0;
+    nAmount = 0;
+    strSentAccount = "";
+
+    if(!IsCoinStake()) return;
+
+    CAmount nDebit = GetDebit(filter);
+    CAmount nCredit = GetCredit(filter);
+
+    if(!(nDebit > 0 && nCredit > 0)) return;
+
+    strSentAccount = strFromAccount;
+
+    if (!ExtractDestination(vout[1].scriptPubKey, address))
+    {
+        LogPrintf("CWalletTx::GetAmounts: Unknown transaction type found, txid %s\n",
+                    this->GetHash().ToString());
+        address = CNoDestination();
+    }
+
+    nAmount = nCredit - nDebit;
+    nFee = GetValueOut() - nCredit;
+}
+
 void CWalletTx::GetAccountAmounts(const std::string& strAccount, CAmount& nReceived, CAmount& nSent,
 		CAmount& nFee, const isminefilter& filter) const
 {
