@@ -2019,7 +2019,7 @@ void ListStakeRewards(const CWalletTx& wtx, json_spirit::Array& ret, const ismin
 {
     CAmount nFee;
     CAmount nAmount;
-    string strSentAccount;
+    std::string strSentAccount;
     CTxDestination address;
 
     // Stakes
