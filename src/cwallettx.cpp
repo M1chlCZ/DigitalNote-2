@@ -734,7 +734,7 @@ void CWalletTx::GetAmounts(std::list<std::pair<CTxDestination, int64_t> >& listR
     }
 }
 
-void CWalletTx::GetStakeAmounts(CAmount& nFee, CAmount& nAmount, string& strSentAccount, CTxDestination& address, const isminefilter& filter) const
+void CWalletTx::GetStakeAmounts(CAmount& nFee, CAmount& nAmount, std::string& strSentAccount, CTxDestination& address, const isminefilter& filter) const
 {
     LOCK(pwallet->cs_wallet);
     nFee = 0;
