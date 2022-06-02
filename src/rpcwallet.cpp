@@ -2034,31 +2034,31 @@ void ListStakeRewards(const CWalletTx& wtx, json_spirit::Array& ret, const ismin
 
             if (pwalletMain->mapAddressBook.count(address))
                 account = pwalletMain->mapAddressBook[address];
-            entry.push_back(Pair("account", account));
+            entry.push_back(json_spirit::Pair("account", account));
             MaybePushAddress(entry, address);
 
             if (wtx.GetDepthInMainChain() < 1)
-                entry.push_back(Pair("category", "orphan"));
+                entry.push_back(json_spirit::Pair("category", "orphan"));
             else if (wtx.GetBlocksToMaturity() > 0)
-                entry.push_back(Pair("category", "immature"));
+                entry.push_back(json_spirit::Pair("category", "immature"));
             else
-                entry.push_back(Pair("category", "generate"));
+                entry.push_back(json_spirit::Pair("category", "generate"));
 
-            entry.push_back(Pair("amount", ValueFromAmount(nAmount)));
+            entry.push_back(json_spirit::Pair("amount", ValueFromAmount(nAmount)));
 
             int confirms = wtx.GetDepthInMainChain(false);
             int confirmsTotal = GetIXConfirmations(wtx.GetHash()) + confirms;
-            entry.push_back(Pair("confirmations", confirmsTotal));
-            entry.push_back(Pair("bcconfirmations", confirms));
+            entry.push_back(json_spirit::Pair("confirmations", confirmsTotal));
+            entry.push_back(json_spirit::Pair("bcconfirmations", confirms));
 
             if (confirms > 0)
             {
                 entry.push_back(Pair("blockhash", wtx.hashBlock.GetHex()));
             }
             uint256 hash = wtx.GetHash();
-            entry.push_back(Pair("txid", hash.GetHex()));
-            entry.push_back(Pair("time", wtx.GetTxTime()));
-            entry.push_back(Pair("timereceived", (int64_t)wtx.nTimeReceived));
+            entry.push_back(json_spirit::Pair("txid", hash.GetHex()));
+            entry.push_back(json_spirit::Pair("time", wtx.GetTxTime()));
+            entry.push_back(json_spirit::Pair("timereceived", (int64_t)wtx.nTimeReceived));
 
             ret.push_back(entry);
         }
